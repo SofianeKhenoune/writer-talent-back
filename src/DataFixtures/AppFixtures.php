@@ -40,7 +40,7 @@ class AppFixtures extends Fixture
         $moderator = new User();
         $moderator->setEmail('moderator@moderator.com');
         $moderator->setUsername('modérateur');
-        $moderator->setRoles(['ROLE_MANAGER']);
+        $moderator->setRoles(['ROLE_MODERATEUR']);
         $moderator->setPassword('modérateur');
         $userListObject[] = $moderator;
         $manager->persist($moderator);

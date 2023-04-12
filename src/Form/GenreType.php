@@ -2,19 +2,19 @@
 
 namespace App\Form;
 
-use App\Entity\Category;
+use App\Entity\Genre;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class CategoryType extends AbstractType
+class GenreType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => "Nom de l'univers",
+                'label' => "Nom du genre",
                 'empty_data' => ''
                 // gère lorsqu'on edit et qu'on supprime tout
             ])
@@ -24,7 +24,7 @@ class CategoryType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Category::class,
+            'data_class' => Genre::class,
         ]);
     }
 }

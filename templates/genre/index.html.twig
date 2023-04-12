@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Genres{% endblock %}
+
+{% block body %}
+    <h1>Liste des Genres</h1>
+    <a class="btn btn-sm btn-primary mb-3" href="{{ path('app_genre_new') }}">Ajouter un genre</a>
+
+    {# {{ include('_flash_messages.html.twig')}} #}
+
+
+
+    <table class="table justify-content-between">
+        <thead>
+            <tr>
+                <th class="col-2">Id</th>
+                <th class="col-7">Name</th>
+                <th class="col-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for genre in genres %}
+            <tr>
+                <td>{{ genre.id }}</td>
+                <td class="text-truncate">{{ genre.name }}</td>
+                <td>
+                    <a href="{{ path('app_genre_show', {'id': genre.id}) }}" class="btn bt-sm btn-primary">Afficher</a>
+                    <a href="{{ path('app_genre_edit', {'id': genre.id}) }}" class="btn bt-sm btn-warning">Modifier</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
