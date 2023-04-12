@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\ReviewRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ReviewRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ReviewRepository::class)
@@ -38,6 +39,11 @@ class Review
      * @ORM\JoinColumn(nullable=false)
      */
     private $post;
+
+    public function __construct()
+    {
+        $this->createdAt = new DateTime();
+    }
 
     public function getId(): ?int
     {

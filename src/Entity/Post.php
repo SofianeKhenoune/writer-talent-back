@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -80,6 +81,9 @@ class Post
     {
         $this->categories = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->nbLikes = 0;
+        $this->nbViews = 0;
+        $this->createdAt = new DateTime();
     }
 
     public function getId(): ?int
