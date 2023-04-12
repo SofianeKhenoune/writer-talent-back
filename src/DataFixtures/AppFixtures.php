@@ -3,14 +3,15 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
+use App\Entity\Post;
 use App\Entity\User;
+use App\Entity\Genre;
+use App\Entity\Review;
 use App\Entity\Category;
+use App\Entity\Favorites;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\DataFixtures\Provider\WriterTalentProvider;
-use App\Entity\Genre;
-use App\Entity\Post;
-use App\Entity\Review;
 
 class AppFixtures extends Fixture
 {
@@ -115,7 +116,6 @@ class AppFixtures extends Fixture
             foreach ($randomCategories as $category) {
                 $post->addCategory($category);
             }
-            
 
             $postListObject[] = $post;
             $manager->persist($post);
@@ -136,9 +136,23 @@ class AppFixtures extends Fixture
         }
 
 
+        // favorites 
 
+        foreach ($userListObject as $userObject) {
+            $randomPosts = $faker->randomElements($postListObject, $faker->numberBetween(1, 3));
+            foreach ($randomPosts as $post) {
+                $userObject->addFavoritesPost($post);
+            }
+        }
 
+        // to read later
 
+        foreach ($userListObject as $userObject) {
+            $randomPosts = $faker->randomElements($postListObject, $faker->numberBetween(1, 2));
+            foreach ($randomPosts as $post) {
+                $userObject->addToReadPost($post);
+            }
+        }
 
         $manager->flush();
     }

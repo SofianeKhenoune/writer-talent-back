@@ -49,16 +49,25 @@ class User
      */
     private $reviews;
 
+
     /**
-     * @ORM\OneToMany(targetEntity=Favorites::class, mappedBy="user")
+     * @ORM\ManyToMany(targetEntity=Post::class)
+     * @ORM\JoinTable(name="favoris")
      */
-    private $favorites;
+    private $FavoritesPosts;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Post::class)
+     * @ORM\JoinTable(name="toReadLater")
+     */
+    private $toReadPosts;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->reviews = new ArrayCollection();
-        $this->favorites = new ArrayCollection();
+        $this->FavoritesPosts = new ArrayCollection();
+        $this->toReadPosts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -174,32 +183,51 @@ class User
         return $this;
     }
 
+
     /**
-     * @return Collection<int, Favorites>
+     * @return Collection<int, Post>
      */
-    public function getFavorites(): Collection
+    public function getFavoritesPosts(): Collection
     {
-        return $this->favorites;
+        return $this->FavoritesPosts;
     }
 
-    public function addFavorite(Favorites $favorite): self
+    public function addFavoritesPost(Post $favoritesPost): self
     {
-        if (!$this->favorites->contains($favorite)) {
-            $this->favorites[] = $favorite;
-            $favorite->setUser($this);
+        if (!$this->FavoritesPosts->contains($favoritesPost)) {
+            $this->FavoritesPosts[] = $favoritesPost;
         }
 
         return $this;
     }
 
-    public function removeFavorite(Favorites $favorite): self
+    public function removeFavoritesPost(Post $favoritesPost): self
     {
-        if ($this->favorites->removeElement($favorite)) {
-            // set the owning side to null (unless already changed)
-            if ($favorite->getUser() === $this) {
-                $favorite->setUser(null);
-            }
+        $this->FavoritesPosts->removeElement($favoritesPost);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getToReadPosts(): Collection
+    {
+        return $this->toReadPosts;
+    }
+
+    public function addToReadPost(Post $toReadPost): self
+    {
+        if (!$this->toReadPosts->contains($toReadPost)) {
+            $this->toReadPosts[] = $toReadPost;
         }
+
+        return $this;
+    }
+
+    public function removeToReadPost(Post $toReadPost): self
+    {
+        $this->toReadPosts->removeElement($toReadPost);
 
         return $this;
     }
