@@ -17,7 +17,7 @@ class ApiPostController extends AbstractController
 {
     /**
      * road to get a post from a given id
-     * @Route("/api/post/{id}", name="api_post_getItem", methods={"GET"})
+     * @Route("/api/post/{id}", name="api_post_get_item", methods={"GET"})
      */
     public function getItem(?Post $post, ManagerRegistry $doctrine)
     {
@@ -52,16 +52,16 @@ class ApiPostController extends AbstractController
     }
 
         /**
-     * @Route("/api/post", name="api_post_post", methods={"POST"})
+     * @Route("/api/post", name="api_post_create_item", methods={"POST"})
      */
     public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface)
     {
-        // On recuperer le json
+        // get the json
         $jsonContent = $request->getContent();
 
         try 
         {
-        // On deserialize (convertir) le json en entité post
+        // deserialize le json into post entity
         $post = $serializer->deserialize($jsonContent, Post::class, 'json');
         } 
         catch (NotEncodableValueException $e) 
@@ -82,23 +82,105 @@ class ApiPostController extends AbstractController
         }
 
 
-        // On sauvegarde l'entité
+        // save
         $entityManager = $doctrine->getManager();
         $entityManager->persist($post);
         $entityManager->flush();
 
-        // On retorune la reponse adapté
 
         return $this->json(
-            // Le film crée
             $post,
-            // Le status code 201 : CREATED
             Response::HTTP_CREATED,
             [
-                // Location = /api/movies/{id_du_film_crée}
-                'Location' => $this->generateUrl('api_post_getItem', ['id' => $post->getId()])
+                'Location' => $this->generateUrl('api_post_get_item', ['id' => $post->getId()])
             ],
             ['groups' => 'get_item']
         );
+    }
+
+    /**
+     * road to get a post from a given id
+     * @Route("/api/post/{id}", name="api_post_delete_item", methods={"DELETE"})
+     */
+    public function deleteItem(ManagerRegistry $doctrine, ?Post $post)
+    {
+
+    if(!$post) 
+    {
+        return $this->json([
+            'error' => "écrit non trouvé",
+            response::HTTP_NOT_FOUND
+        ]);
+    }
+
+    else
+    {
+        // save the modification of the entity
+        $entityManager = $doctrine->getManager();
+        $entityManager->remove($post);
+        $entityManager->flush();
+
+
+        return $this->json(
+            [],
+            204,
+        );
+    }
+    }
+
+    /**
+     * road to get a post from a given id
+     * @Route("/api/post/{id}", name="api_post_update_item", methods={"PUT"})
+     */
+    public function UpdateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface)
+    {
+
+    if(!$post) 
+    {
+        return $this->json([
+            'error' => "écrit non trouvé",
+            response::HTTP_NOT_FOUND
+        ]);
+    }
+
+    else
+    {
+        // get the json
+        $jsonContent = $request->getContent();
+
+        try 
+        {
+        // deserialize le json into post entity
+        $post = $serializer->deserialize($jsonContent, Post::class, 'json');
+
+        } 
+        catch (NotEncodableValueException $e) 
+        {
+            return $this->json(
+                ["error" => "JSON INVALIDE"],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $errors = $validatorInterface->validate($post);
+
+        if(count($errors) > 0)
+        {
+            return $this->json(
+                $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($post);
+        $entityManager->flush();
+
+        return $this->json(
+            $post,
+            204,
+            [],
+            ['groups' => 'get_item']
+        );
+    }
     }
 }
