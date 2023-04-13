@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
@@ -17,58 +18,69 @@ class Post
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"postsByGenre","get_item"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=128)
+     * @Groups({"postsByGenre","get_item"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"postsByGenre","get_item"})
      */
     private $content;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"postsByGenre","get_item"})
      */
     private $nbViews;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"postsByGenre","get_item"})
      */
     private $nbLikes;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"postsByGenre","get_item"})
      */
     private $publishedAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"postsByGenre","get_item"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"postsByGenre","get_item"})
      */
     private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="posts")
+     * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_item"})
      */
     private $genre;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_collection","get_item"})
      */
     private $user;
 
     /**
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="posts")
+     * @Groups({"get_collection","get_item"})
      */
     private $categories;
 
@@ -83,6 +95,7 @@ class Post
         $this->reviews = new ArrayCollection();
         $this->nbLikes = 0;
         $this->nbViews = 0;
+        $this->status = 0;
         $this->createdAt = new DateTime();
     }
 
