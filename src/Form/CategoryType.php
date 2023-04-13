@@ -16,7 +16,7 @@ class CategoryType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => "Nom de l'univers",
                 'empty_data' => ''
-                // gère lorsqu'on edit et qu'on supprime tout
+                // if editing and removing all the data
             ])
         ;
     }

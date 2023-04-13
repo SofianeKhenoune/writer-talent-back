@@ -19,14 +19,13 @@ class UserType extends AbstractType
             ->add('email')
             ->add('roles', ChoiceType::class, [
                 'choices' => [
-                    // libellé, valeur
+                    // label
                     'Membre' => 'ROLE_USER',
                     'Modérateur' => 'ROLE_MODERATEUR',
                     'Administrateur' => 'ROLE_ADMIN',
                 ],
-                // choix multiple, parce que roles = tableau PHP
                 'multiple' => true, 
-                // plusieurs "widgets" HTML
+                // several "widgets" HTML
                 'expanded' => true,
 
                 'label' => 'Rôle(s)',
@@ -41,21 +40,18 @@ class UserType extends AbstractType
                 if($user->getId() !== null) 
                 {
                 $form->add('password', PasswordType::class, [
-                    // ce champ n'est plus "mappé" entre le form et l'entité
-                    // le form ne mettra pas à jour automatiquement ce champ dans l'entité
-                    // @see https://symfony.com/doc/current/reference/forms/types/text.html#mapped
                     'mapped' => false,
                     'attr' => [
                         'placeholder' => 'Laissez vide si inchangé...',
                     ],
-                    'help' => 'Make sure it\'s at least 15 characters OR at least 8 characters including a number and a lowercase letter.',
+                    'help' => 'Minimum 10 caractères contenant un chiffre, un caractère spécial, une minuscule et une majuscule.',
                 ]);
                 }
 
                 else
                 {
                 $form->add('password', PasswordType::class, [
-                'help' => 'Make sure it\'s at least 15 characters OR at least 8 characters including a number and a lowercase letter.',
+                'help' => 'Minimum 10 caractères contenant un chiffre, un caractère spécial, une minuscule et une majuscule.',
                 ]);
                 }
 

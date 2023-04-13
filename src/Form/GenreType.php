@@ -16,7 +16,7 @@ class GenreType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => "Nom du genre",
                 'empty_data' => ''
-                // gère lorsqu'on edit et qu'on supprime tout
+                // if editing and removing all the data
             ])
         ;
     }

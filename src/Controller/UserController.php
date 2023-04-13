@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * @Route("/user")
+ * @Route("/back/user")
  */
 class UserController extends AbstractController
 {
@@ -38,7 +38,6 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
         $hashedPassword = $userPasswordHasher->hashPassword($user, $user->getPassword());
 
-        // on définit le mot de passe du user avec le mot de passe haché
         $user->setPassword($hashedPassword);
 
         $userRepository->add($user, true);
@@ -71,18 +70,14 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string|null $newPassword Le mot de passe présent dans le formulaire */
+            /** @var string|null $newPassword password from the form */
             $newPassword = $form->get('password')->getData();
 
-
-            // si un mot de passe est présent, on le hache et on le transmet au $user
+            // if there is a password then hashing et set on the user object
             if ($newPassword !== null) {
                 $hashedPassword = $userPasswordHasher->hashPassword($user, $newPassword);
                 $user->setPassword($hashedPassword);
             }
-
-            // dump($newPassword);
-            // dd($user);
 
             $userRepository->add($user, true);
 
