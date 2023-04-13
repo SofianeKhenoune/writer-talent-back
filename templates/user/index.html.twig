@@ -6,6 +6,8 @@
     <h1>Liste des utilisateurs</h1>
      <a class="btn btn-sm btn-primary mb-3" href="{{ path('app_user_new') }}">Ajouter un utilisateur</a>
 
+    {{ include('_flash_messages.html.twig')}}
+
 
     <table class="table">
         <thead>

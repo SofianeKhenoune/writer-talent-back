@@ -36,6 +36,7 @@ class GenreController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $genreRepository->add($genre, true);
+            $this->addFlash('success', "<b>{$genre->getName()}</b> ajouté.");
 
             return $this->redirectToRoute('app_genre_index', [], Response::HTTP_SEE_OTHER);
         }

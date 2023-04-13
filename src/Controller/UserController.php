@@ -42,6 +42,8 @@ class UserController extends AbstractController
 
         $userRepository->add($user, true);
 
+        $this->addFlash('success', "<b>{$user->getUsername()}</b> ajouté.");
+
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
