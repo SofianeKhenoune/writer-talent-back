@@ -51,7 +51,7 @@ class ApiPostController extends AbstractController
     }
     }
 
-        /**
+    /**
      * @Route("/api/post", name="api_post_create_item", methods={"POST"})
      */
     public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface)
