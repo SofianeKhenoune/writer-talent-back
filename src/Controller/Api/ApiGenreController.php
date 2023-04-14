@@ -8,12 +8,14 @@ use App\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ApiGenreController extends AbstractController
 {
     /**
      * road to get all genres
      * @Route("/api/genres", name="api_genres_get", methods={"GET"})
+     * @isGranted("ROLE_ADMIN", message="Vous devez être un administrateur")
      */
     public function getGenres(GenreRepository $genreRepository): Response
     {
