@@ -91,9 +91,7 @@ class ApiPostController extends AbstractController
         return $this->json(
             $post,
             Response::HTTP_CREATED,
-            [
-                'Location' => $this->generateUrl('api_post_get_item', ['id' => $post->getId()])
-            ],
+            [],
             ['groups' => 'get_item']
         );
     }
@@ -151,7 +149,7 @@ class ApiPostController extends AbstractController
         try 
         {
         // deserialize le json into post entity
-        $post = $serializer->deserialize($jsonContent, Post::class, 'json');
+        $postModified = $serializer->deserialize($jsonContent, Post::class, 'json', ['object_to_populate' => $post]);
 
         } 
         catch (NotEncodableValueException $e) 
@@ -162,7 +160,7 @@ class ApiPostController extends AbstractController
             );
         }
 
-        $errors = $validatorInterface->validate($post);
+        $errors = $validatorInterface->validate($postModified);
 
         if(count($errors) > 0)
         {
@@ -172,12 +170,12 @@ class ApiPostController extends AbstractController
         }
 
         $entityManager = $doctrine->getManager();
-        $entityManager->persist($post);
+        $entityManager->persist($postModified);
         $entityManager->flush();
 
         return $this->json(
-            $post,
-            204,
+            $postModified,
+            Response::HTTP_CREATED,
             [],
             ['groups' => 'get_item']
         );

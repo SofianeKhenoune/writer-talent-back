@@ -18,49 +18,49 @@ class Post
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"postsByGenre","get_item", "postsByCategory"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=128)
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"postsByGenre","get_item", "postsByCategory"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"postsByGenre","get_item", "postsByCategory"})
      */
     private $content;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"postsByGenre","get_item", "postsByCategory"})
      */
     private $nbViews;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"postsByGenre","get_item", "postsByCategory"})
      */
     private $nbLikes;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"postsByGenre","get_item", "postsByCategory"})
      */
     private $publishedAt;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"postsByGenre","get_item", "postsByCategory"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"postsByGenre","get_item", "postsByCategory"})
      */
     private $status;
 

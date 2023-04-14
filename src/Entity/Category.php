@@ -18,13 +18,14 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_categories_collection"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=128)
      * @Assert\NotBlank
-     * @Groups({"get_item"})
+     * @Groups({"get_item", "get_categories_collection"})
      */
     private $name;
 
