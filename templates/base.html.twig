@@ -1,19 +1,97 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<!doctype html>
+<html lang="fr">
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <!-- Bootstrap icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+
+
+    <title>{% block title %}Welcome{% endblock %} - WriterTalent</title>
+</head>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a href="#"
+                class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none header-logo">
+                <img src="{{ asset('WriterTalent-logo.png') }}" height="60" alt="Logo writertalent">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_category_index') }}">Univers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_genre_index') }}">Genres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_user_index') }}">Utilisateurs</a>
+                    </li>
+                </ul>
+                {# menu user #}
+                {# {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            <span>{{ app.user.email }}</span>
+                            <i class="bi bi-person-square"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><h6 class="dropdown-header">
+                                {% if is_granted("ROLE_ADMIN") %}
+                                Administrateur
+                                {% elseif is_granted("ROLE_MANAGER") %}
+                                Manager
+                                {% elseif is_granted("ROLE_USER") %}
+                                Membre
+                                {% endif %}
+                            </h6></li>
+                            <li><a class="dropdown-item" href="#">Profil</a></li>
+                            {% if is_granted('ROLE_MANAGER') %}
+                            <li><a class="dropdown-item" href="{{ path('app_back_movie_index') }}">Backoffice</a></li>
+                            {% endif %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-danger me-2">Connexion</a>
+                {% endif %} #}
+
+            </div>
+        </div>
+    </nav>
+<body>
+
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"></script>
+
+</body>
+
 </html>
+
