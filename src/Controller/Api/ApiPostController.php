@@ -97,7 +97,7 @@ class ApiPostController extends AbstractController
     }
 
     /**
-     * road to get a post from a given id
+     * road to delete a post from a given id
      * @Route("/api/post/{id}", name="api_post_delete_item", methods={"DELETE"})
      */
     public function deleteItem(ManagerRegistry $doctrine, ?Post $post)
@@ -181,4 +181,26 @@ class ApiPostController extends AbstractController
         );
     }
     }
+
+    /**
+     * road to get a random post
+     * @Route("/api/post-random", name="api_post_get_item_random", methods={"GET"})
+     */
+    public function getRandomItem(PostRepository $postRepository)
+    {
+        $randomPost = $postRepository->findOneRandomPost();
+
+
+
+        return $this->json(
+            $randomPost,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to get 
+     */
 }

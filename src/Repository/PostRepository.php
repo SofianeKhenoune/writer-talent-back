@@ -39,6 +39,58 @@ class PostRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Get one random Post (QB)
+     */
+    public function findOneRandomPost()
+    {
+        $query = $this->createQueryBuilder('p')
+        ->orderBy('RAND()')
+        ->setMaxResults(1);
+
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Get all posts publicated from a given user
+     */
+    public function findPublicatedPostFromUser($user)
+    {
+        $query = $this->createQueryBuilder('p')
+        ->where('p.user = :user')
+        ->andWhere('p.status = 2')
+        ->setParameter('user', $user);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Get all posts awaiting of publication from a given user
+     */
+    public function findAwaitingPostFromUser($user)
+    {
+        $query = $this->createQueryBuilder('p')
+        ->where('p.user = :user')
+        ->andWhere('p.status = 1')
+        ->setParameter('user', $user);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Get all posts saved from a given user
+     */
+    public function findSavedPostFromUser($user)
+    {
+        $query = $this->createQueryBuilder('p')
+        ->where('p.user = :user')
+        ->andWhere('p.status = 0')
+        ->setParameter('user', $user);
+
+        return $query->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Post[] Returns an array of Post objects
 //     */
