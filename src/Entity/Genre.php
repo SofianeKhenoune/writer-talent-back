@@ -18,19 +18,20 @@ class Genre
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"get_genres_collection"})
+     * @Groups({"get_post", "get_item"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=128)
      * @Assert\NotBlank
-     * @Groups({"get_genres_collection","get_item"})
+     * @Groups({"get_post", "get_item"})
      */
-    private $name;
+    private $name;  
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="genre", orphanRemoval=true)
+     * @Groups({"get_post"})
      */
     private $posts;
 

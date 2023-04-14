@@ -12,7 +12,7 @@ class ApiCategoryController extends AbstractController
 {
     /**
      * road to get all categories
-     * @Route("/api/category", name="api_category_get", methods={"GET"})
+     * @Route("/api/categories", name="api_category_get", methods={"GET"})
      */
     public function getCategory(CategoryRepository $categoryRepository): Response
     {
@@ -22,13 +22,13 @@ class ApiCategoryController extends AbstractController
             $categoryList, 
             Response::HTTP_OK, 
             [],
-            ['groups' => 'get_categories_collection']
+            ['groups' => 'get_item']
         );
     }
 
     /**
      * road to get all posts from a given categories
-     * @Route("/api/category/{id}", name="api_postsByCategory_get", methods={"GET"})
+     * @Route("/api/category/{id}/posts", name="api_postsByCategory_get", methods={"GET"})
      */
     public function getPosts(Category $category)
     {
@@ -40,7 +40,7 @@ class ApiCategoryController extends AbstractController
             Response::HTTP_OK, 
             [],
             ['groups' => [
-                'postsByCategory',
+                'get_post',
             ]]
         );
     }

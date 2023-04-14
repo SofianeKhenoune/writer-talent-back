@@ -23,13 +23,13 @@ class ApiGenreController extends AbstractController
             $genreList, 
             Response::HTTP_OK, 
             [],
-            ['groups' => 'get_genres_collection']
+            ['groups' => 'get_item']
         );
     }
 
     /**
      * road to get all posts from a given genre
-     * @Route("/api/genre/{id}", name="api_postsByGenre_get", methods={"GET"})
+     * @Route("/api/genre/{id}/posts", name="api_postsByGenre_get", methods={"GET"})
      */
     public function getPosts(Genre $genre)
     {
@@ -41,7 +41,7 @@ class ApiGenreController extends AbstractController
             Response::HTTP_OK, 
             [],
             ['groups' => [
-                'postsByGenre',
+                'get_post',
             ]]
         );
     }

@@ -22,18 +22,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_post"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank
+     * @Groups({"get_post"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
      * @Assert\NotBlank
+     * @Groups({"get_post"})
      */
     private $roles = [];
 
@@ -47,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=128)
      * @Assert\NotBlank
-     * @Groups({"postsByGenre","get_item"})
+     * @Groups({"get_post"})
      */
     private $username;
 

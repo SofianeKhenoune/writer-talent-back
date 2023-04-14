@@ -18,74 +18,73 @@ class Post
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"postsByGenre","get_item", "postsByCategory"})
+     * @Groups({"get_post"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=128)
-     * @Groups({"postsByGenre","get_item", "postsByCategory"})
+     * @Groups({"get_post"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
-     * @Groups({"postsByGenre","get_item", "postsByCategory"})
+     * @Groups({"get_post"})
      */
     private $content;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"postsByGenre","get_item", "postsByCategory"})
+     * @Groups({"get_post"})
      */
     private $nbViews;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"postsByGenre","get_item", "postsByCategory"})
+     * @Groups({"get_post"})
      */
     private $nbLikes;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"postsByGenre","get_item", "postsByCategory"})
+     * @Groups({"get_post"})
      */
     private $publishedAt;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"postsByGenre","get_item", "postsByCategory"})
+     * @Groups({"get_post"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"postsByGenre","get_item", "postsByCategory"})
+     * @Groups({"get_post"})
      */
     private $status;
 
     /**
      * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_item"})
      */
     private $genre;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"get_collection","get_item"})
+     * @Groups({"get_post"})
      */
     private $user;
 
     /**
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="posts")
-     * @Groups({"get_collection","get_item"})
      */
     private $categories;
 
     /**
      * @ORM\OneToMany(targetEntity=Review::class, mappedBy="post")
+     * @Groups({"get_post"})
      */
     private $reviews;
 

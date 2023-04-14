@@ -5,6 +5,7 @@ namespace App\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ReviewRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ReviewRepository::class)
@@ -15,22 +16,26 @@ class Review
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get_post"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"get_post"})
      */
     private $content;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"get_post"})
      */
     private $createdAt;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reviews")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_post"})
      */
     private $user;
 

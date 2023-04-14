@@ -46,7 +46,7 @@ class ApiPostController extends AbstractController
             $post,
             200,
             [],
-            ['groups' => 'get_item']
+            ['groups' => 'get_post']
         );
     }
     }
@@ -92,7 +92,7 @@ class ApiPostController extends AbstractController
             $post,
             Response::HTTP_CREATED,
             [],
-            ['groups' => 'get_item']
+            ['groups' => 'get_post']
         );
     }
 
@@ -177,7 +177,7 @@ class ApiPostController extends AbstractController
             $postModified,
             Response::HTTP_CREATED,
             [],
-            ['groups' => 'get_item']
+            ['groups' => 'get_post']
         );
     }
     }
