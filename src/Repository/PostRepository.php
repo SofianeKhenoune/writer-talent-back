@@ -91,6 +91,17 @@ class PostRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
+    /**
+     * Get all posts publicated
+     */
+    public function findAllPublicated()
+    {
+        $query = $this->createQueryBuilder('p')
+        ->Where('p.status = 2');
+
+        return $query->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Post[] Returns an array of Post objects
 //     */

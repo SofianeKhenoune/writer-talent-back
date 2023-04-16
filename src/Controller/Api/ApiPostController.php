@@ -130,7 +130,7 @@ class ApiPostController extends AbstractController
      * road to get a post from a given id
      * @Route("/api/post/{id}", name="api_post_update_item", methods={"PUT"})
      */
-    public function UpdateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface)
+    public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface)
     {
 
     if(!$post) 
@@ -201,6 +201,38 @@ class ApiPostController extends AbstractController
     }
 
     /**
-     * road to get 
+     * road to get a post from a given id
+     * @Route("/api/post/{id}/like", name="api_post_add_like", methods={"PUT"})
      */
+    public function addLike(ManagerRegistry $doctrine, ?Post $post)
+    {
+
+    if(!$post) 
+    {
+        return $this->json([
+            'error' => "écrit non trouvé",
+            response::HTTP_NOT_FOUND
+        ]);
+    }
+
+    else
+    {
+        // update nbLikes
+        $nbLikes = $post->getNbLikes();
+        $post->setNbLikes($nbLikes+1);
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($post);
+        $entityManager->flush();
+
+        return $this->json(
+            $post,
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+    }
+
+
 }

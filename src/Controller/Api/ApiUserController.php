@@ -82,4 +82,35 @@ class ApiUserController extends AbstractController
             ['groups' => 'get_post']
         );
     }
+
+    /**
+     * road to get all users with at least one publicated post
+     * @Route("/api/users/authors", name="api_post_get_authors", methods={"GET"})
+     */
+    public function getAuthors(PostRepository $postRepository)
+    {
+        // get all publicated post 
+        $allPulicatedPosts = $postRepository->findAllPublicated();
+
+        // creation of an empty table authorList
+        $authorList = [];
+
+        // boucle on all publicated post to get their user
+        foreach ($allPulicatedPosts as $postOublicated) {
+            // if the user does not already belong to the authorlist then push him in the author list
+            if(!in_array($postOublicated->getUser(), $authorList)) 
+            {
+                $authorList[] = $postOublicated->getUser();
+            }
+        }
+
+        return $this->json(
+            $authorList,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+    
+    
 }
