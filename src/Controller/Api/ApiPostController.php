@@ -199,39 +199,6 @@ class ApiPostController extends AbstractController
         );
     }
 
-    /**
-     * road to get a post from a given id
-     * @Route("/api/post/{id}/like", name="api_post_add_like", methods={"PUT"})
-     */
-    public function addLike(ManagerRegistry $doctrine, ?Post $post)
-    {
-
-        if(!$post) 
-        {
-            return $this->json([
-                'error' => "écrit non trouvé",
-                response::HTTP_NOT_FOUND
-            ]);
-        }
-
-        else
-        {
-            // update nbLikes
-            $nbLikes = $post->getNbLikes();
-            $post->setNbLikes($nbLikes+1);
-
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($post);
-            $entityManager->flush();
-
-            return $this->json(
-                $post,
-                Response::HTTP_CREATED,
-                [],
-                ['groups' => 'get_post']
-            );
-        }
-    }
 
     /**
      * road to set a status from a given post to 2 (publicated)
@@ -324,6 +291,29 @@ class ApiPostController extends AbstractController
                 Response::HTTP_NO_CONTENT,
             );
         }
+    }
+
+    /**
+     * road to get the number of like on a given post
+     * @Route("/api/post/{id}/like", name="api_post-like", methods={"GET"})
+     */
+    public function getNbLike(?Post $post): Response
+    {
+        if(!$post) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        $nbLike = $post->getNbLikes();
+
+        return $this->json(
+            $nbLike,
+            200,
+            [],
+        );
     }
 
 

@@ -16,7 +16,7 @@ class ApiUserController extends AbstractController
 {
     /**
      * road to get all posts publicated from a given user
-     * @Route("/api/user/{id}/posts/published", name="api_user_posts_publicated")
+     * @Route("/api/user/{id}/posts/published", name="api_user_posts_publicated", methods={"GET"})
      */
     public function getPublicatedPost(?User $user, PostRepository $postRepository): Response
     {
@@ -40,7 +40,7 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get all posts awaiting of publication from a given user
-     * @Route("/api/user/{id}/posts/awaiting", name="api_user_posts_awaiting")
+     * @Route("/api/user/{id}/posts/awaiting", name="api_user_posts_awaiting", methods={"GET"})
      */
     public function getAwaitingPost(?User $user, PostRepository $postRepository): Response
     {
@@ -65,7 +65,7 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get all posts saved from a given user
-     * @Route("/api/user/{id}/posts/saved", name="api_user_posts_saved")
+     * @Route("/api/user/{id}/posts/saved", name="api_user_posts_saved", methods={"GET"})
      */
     public function getSavedPost(?User $user, PostRepository $postRepository): Response
     {
@@ -316,6 +316,93 @@ class ApiUserController extends AbstractController
         );
     }
 
-    
-    
+    /**
+     * road to add a like on a given post from a given user
+     * @Route("/api/user/{id}/post/{post_id}/like", name="api_user_add_like", methods={"PUT"})
+     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     */
+    public function addLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
+    {
+
+        if(!$post) 
+        {
+            return $this->json([
+                'error' => "écrit non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        elseif(!$user)
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        else
+        {
+
+
+            if(!$user->getLiked()->contains($post))
+            {
+                $nbLikes = $post->getNbLikes();
+                $post->setNbLikes($nbLikes+1);
+            }
+
+            $user->addLiked($post);
+
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
+
+
+
+            return $this->json(
+                [],
+                Response::HTTP_CREATED,
+                [],
+            );
+        }
+    }
+
+    /**
+     * road to add a like on a given post from a given user
+     * @Route("/api/user/{id}/post/{post_id}/like", name="api_user_remove_like", methods={"DELETE"})
+     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     */
+    public function removeLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
+    {
+
+        if(!$post) 
+        {
+            return $this->json([
+                'error' => "écrit non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        elseif(!$user)
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        else
+        {
+            $user->removeLiked($post);
+
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
+
+            return $this->json(
+                [],
+                Response::HTTP_CREATED,
+                [],
+            );
+        }
+    }
 }

@@ -70,7 +70,7 @@ class AppFixtures extends Fixture
         $admin->setEmail('admin@admin.com');
         $admin->setUsername('admin');
         $admin->setRoles(['ROLE_ADMIN']);
-        $admin->setPassword('admin');
+        $admin->setPassword('$2y$13$DSSsUzmA93bTy7/VJLfsYedZ0xw0Rj9NggOEgZu3t9XM3r2zeizKm');
         $userListObject[] = $admin;
         $manager->persist($admin);
         
@@ -79,7 +79,7 @@ class AppFixtures extends Fixture
         $moderator->setEmail('moderator@moderator.com');
         $moderator->setUsername('modérateur');
         $moderator->setRoles(['ROLE_MODERATEUR']);
-        $moderator->setPassword('modérateur');
+        $moderator->setPassword('$2y$13$DSSsUzmA93bTy7/$2y$13$1PKtDCZsV2OnYUF9/gQb4OfNTioRReeMU1l9md9j7eEyj5sSNX7Ma');
         $userListObject[] = $moderator;
         $manager->persist($moderator);
 
@@ -88,7 +88,7 @@ class AppFixtures extends Fixture
         $user->setEmail('user@user.com');
         $user->setUsername('user');
         $user->setRoles(['ROLE_USER']);
-        $user->setPassword('user');
+        $user->setPassword('$2y$13$hZ3FlM1mdghpaRz1.iFNDORLnzdbypiTk9QxfNFfMfYQx8gnIahoq');
         $userListObject[] = $user;
         $manager->persist($user);
 
@@ -192,6 +192,15 @@ class AppFixtures extends Fixture
             $randomPosts = $faker->randomElements($postListObject, $faker->numberBetween(1, 2));
             foreach ($randomPosts as $post) {
                 $userObject->addToReadPost($post);
+            }
+        }
+
+        // liked
+        foreach ($userListObject as $userObject) {
+            $randomPosts = $faker->randomElements($postListObject, $faker->numberBetween(1, 2));
+            foreach ($randomPosts as $post) {
+                $userObject->addLiked($post);
+                $post->setNbLikes(+1);
             }
         }
 

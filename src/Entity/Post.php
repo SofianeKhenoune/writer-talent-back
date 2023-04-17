@@ -98,6 +98,11 @@ class Post
      */
     private $slug;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="liked")
+     */
+    private $userLiked;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -106,6 +111,7 @@ class Post
         $this->nbViews = 0;
         $this->status = 0;
         $this->createdAt = new DateTime();
+        $this->userLiked = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -283,6 +289,33 @@ class Post
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getLikedPost(): Collection
+    {
+        return $this->userLiked;
+    }
+
+    public function addLikedPost(User $likedPost): self
+    {
+        if (!$this->userLiked->contains($likedPost)) {
+            $this->userLiked[] = $likedPost;
+            $likedPost->addLiked($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedPost(User $likedPost): self
+    {
+        if ($this->userLiked->removeElement($likedPost)) {
+            $likedPost->removeLiked($this);
+        }
 
         return $this;
     }
