@@ -2,11 +2,15 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Post;
 use App\Entity\User;
+use Doctrine\ORM\EntityManager;
 use App\Repository\PostRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class ApiUserController extends AbstractController
 {
@@ -111,6 +115,207 @@ class ApiUserController extends AbstractController
             ['groups' => 'get_post']
         );
     }
+
+    /**
+     * road to get all favorite posts from a given user
+     * @Route("/api/user/{id}/favorites", name="api_user_posts_favorites", methods={"GET"})    
+     */
+    public function getFavoritesPost(?User $user): Response
+    {
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        $favoritePosts = $user->getFavoritesPosts();
+
+        return $this->json(
+            $favoritePosts,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to add a favorite post to a given user
+     * @Route("/api/user/{id}/favorites/post/{post_id}", name="api_user_post_favorites_new", methods={"PUT"})
+     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     */
+    public function addFavoritePost(?User $user, ?Post $post, ManagerRegistry $doctrine)
+    {
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        elseif(!$post)
+        {
+            return $this->json([
+                'error' => "post non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        $user->addFavoritesPost($post);
+
+        // save
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(
+            $user->getFavoritesPosts(),
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to remove a favorite post of a given user
+     * @Route("/api/user/{id}/favorites/post/{post_id}", name="api_user_post_favorites_remove", methods={"DELETE"})
+     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     */
+    public function removeFavoritePost(?User $user, ?Post $post, ManagerRegistry $doctrine)
+    {
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        elseif(!$post)
+        {
+            return $this->json([
+                'error' => "post non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+        
+        $user->removeFavoritesPost($post);
+
+        // save
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(
+            $user->getFavoritesPosts(),
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+        /**
+     * road to get all to read posts from a given user
+     * @Route("/api/user/{id}/toread", name="api_user_posts_toread", methods={"GET"})    
+     */
+    public function getToreadPost(?User $user): Response
+    {
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        $toReadPosts = $user->getToReadPosts();
+
+        return $this->json(
+            $toReadPosts,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to add a post to the to read list of a given user
+     * @Route("/api/user/{id}/toread/post/{post_id}", name="api_user_post_toread_new", methods={"PUT"})
+     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     */
+    public function addToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
+    {
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        elseif(!$post)
+        {
+            return $this->json([
+                'error' => "post non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        $user->addToReadPost($post);
+
+        // save
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(
+            $user->getToReadPosts(),
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to remove a post from the to read list of a given user
+     * @Route("/api/user/{id}/toread/post/{post_id}", name="api_user_post_toread_remove", methods={"DELETE"})
+     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     */
+    public function removeToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
+    {
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        elseif(!$post)
+        {
+            return $this->json([
+                'error' => "post non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+        
+        $user->removeToReadPost($post);
+
+        // save
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(
+            $user->getToReadPosts(),
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
     
     
 }

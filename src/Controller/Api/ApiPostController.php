@@ -103,27 +103,27 @@ class ApiPostController extends AbstractController
     public function deleteItem(ManagerRegistry $doctrine, ?Post $post)
     {
 
-    if(!$post) 
-    {
-        return $this->json([
-            'error' => "écrit non trouvé",
-            response::HTTP_NOT_FOUND
-        ]);
-    }
+        if(!$post) 
+        {
+            return $this->json([
+                'error' => "écrit non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
 
-    else
-    {
-        // save the modification of the entity
-        $entityManager = $doctrine->getManager();
-        $entityManager->remove($post);
-        $entityManager->flush();
+        else
+        {
+            // save the modification of the entity
+            $entityManager = $doctrine->getManager();
+            $entityManager->remove($post);
+            $entityManager->flush();
 
 
-        return $this->json(
-            [],
-            204,
-        );
-    }
+            return $this->json(
+                [],
+                204,
+            );
+        }
     }
 
     /**
@@ -132,54 +132,53 @@ class ApiPostController extends AbstractController
      */
     public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface)
     {
-
-    if(!$post) 
-    {
-        return $this->json([
-            'error' => "écrit non trouvé",
-            response::HTTP_NOT_FOUND
-        ]);
-    }
-
-    else
-    {
-        // get the json
-        $jsonContent = $request->getContent();
-
-        try 
+        if(!$post) 
         {
-        // deserialize le json into post entity
-        $postModified = $serializer->deserialize($jsonContent, Post::class, 'json', ['object_to_populate' => $post]);
-
-        } 
-        catch (NotEncodableValueException $e) 
-        {
-            return $this->json(
-                ["error" => "JSON INVALIDE"],
-                Response::HTTP_UNPROCESSABLE_ENTITY
-            );
+            return $this->json([
+                'error' => "écrit non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
         }
 
-        $errors = $validatorInterface->validate($postModified);
-
-        if(count($errors) > 0)
+        else
         {
+            // get the json
+            $jsonContent = $request->getContent();
+
+            try 
+            {
+            // deserialize le json into post entity
+            $postModified = $serializer->deserialize($jsonContent, Post::class, 'json', ['object_to_populate' => $post]);
+
+            } 
+            catch (NotEncodableValueException $e) 
+            {
+                return $this->json(
+                    ["error" => "JSON INVALIDE"],
+                    Response::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+
+            $errors = $validatorInterface->validate($postModified);
+
+            if(count($errors) > 0)
+            {
+                return $this->json(
+                    $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($postModified);
+            $entityManager->flush();
+
             return $this->json(
-                $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+                $postModified,
+                Response::HTTP_CREATED,
+                [],
+                ['groups' => 'get_post']
             );
         }
-
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($postModified);
-        $entityManager->flush();
-
-        return $this->json(
-            $postModified,
-            Response::HTTP_CREATED,
-            [],
-            ['groups' => 'get_post']
-        );
-    }
     }
 
     /**
@@ -207,32 +206,124 @@ class ApiPostController extends AbstractController
     public function addLike(ManagerRegistry $doctrine, ?Post $post)
     {
 
-    if(!$post) 
+        if(!$post) 
+        {
+            return $this->json([
+                'error' => "écrit non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        else
+        {
+            // update nbLikes
+            $nbLikes = $post->getNbLikes();
+            $post->setNbLikes($nbLikes+1);
+
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
+
+            return $this->json(
+                $post,
+                Response::HTTP_CREATED,
+                [],
+                ['groups' => 'get_post']
+            );
+        }
+    }
+
+    /**
+     * road to set a status from a given post to 2 (publicated)
+     * @Route("/api/post/{id}/publicated", name="api_post_update_status_publicated", methods={"PUT"})
+     */
+    public function setStatutsToPublicated(ManagerRegistry $doctrine, ?Post $post){
+
+        if(!$post) 
     {
         return $this->json([
-            'error' => "écrit non trouvé",
+            'error' => "status non trouvé",
             response::HTTP_NOT_FOUND
         ]);
     }
 
     else
     {
-        // update nbLikes
-        $nbLikes = $post->getNbLikes();
-        $post->setNbLikes($nbLikes+1);
+        // update status
+        $post->setStatus(2);
 
         $entityManager = $doctrine->getManager();
         $entityManager->persist($post);
         $entityManager->flush();
 
         return $this->json(
-            $post,
-            Response::HTTP_CREATED,
             [],
-            ['groups' => 'get_post']
+            Response::HTTP_NO_CONTENT,
         );
     }
     }
+
+    /**
+     * road to set a status from a given post to 1 (awaiting for publication)
+     * @Route("/api/post/{id}/awaiting", name="api_post_update_status_awaiting", methods={"PUT"})
+     */
+    public function setStatutsToAwaiting(ManagerRegistry $doctrine, ?Post $post){
+
+        if(!$post) 
+    {
+        return $this->json([
+            'error' => "status non trouvé",
+            response::HTTP_NOT_FOUND
+        ]);
+    }
+
+    else
+    {
+        // update status
+        $post->setStatus(1);
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($post);
+        $entityManager->flush();
+
+        return $this->json(
+            [],
+            Response::HTTP_NO_CONTENT,
+        );
+    }
+    }
+
+    /**
+     * road to set a status from a given post to 0 (saved)
+     * @Route("/api/post/{id}/saved", name="api_post_update_status_saved", methods={"PUT"})
+     */
+    public function setStatutsToSaved(ManagerRegistry $doctrine, ?Post $post){
+
+        if(!$post) 
+    {
+        return $this->json([
+            'error' => "status non trouvé",
+            response::HTTP_NOT_FOUND
+        ]);
+    }
+
+    else
+    {
+        // update status
+        $post->setStatus(0);
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($post);
+        $entityManager->flush();
+
+        return $this->json(
+            [],
+            Response::HTTP_NO_CONTENT,
+        );
+    }
+    }
+
+
 
 
 }
