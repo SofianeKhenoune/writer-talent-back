@@ -300,6 +300,7 @@ class ApiUserController extends AbstractController
                 response::HTTP_NOT_FOUND
             ]);
         }
+
         
         $user->removeToReadPost($post);
 
@@ -343,6 +344,8 @@ class ApiUserController extends AbstractController
         else
         {
 
+            // if the association between the post liked and the user does not exist already then increment the nbLike of the post
+            // preventing a user to be able to like a post more than one time 
 
             if(!$user->getLiked()->contains($post))
             {
@@ -350,13 +353,12 @@ class ApiUserController extends AbstractController
                 $post->setNbLikes($nbLikes+1);
             }
 
+            // add the association in the DB
             $user->addLiked($post);
 
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
-
-
 
             return $this->json(
                 [],
@@ -392,6 +394,15 @@ class ApiUserController extends AbstractController
 
         else
         {
+
+            // if the association between the post and the user already exist then decrement the nbLike of the post
+            // preventing a user to be able to dislike a post more than one time 
+            if($user->getLiked()->contains($post))
+            {
+                $nbLikes = $post->getNbLikes();
+                $post->setNbLikes($nbLikes-1);
+            }
+            
             $user->removeLiked($post);
 
             $entityManager = $doctrine->getManager();
