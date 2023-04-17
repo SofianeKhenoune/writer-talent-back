@@ -64,7 +64,7 @@ class ApiReviewController extends AbstractController
 
     /**
      * road to get all reviews from a given post
-     * @Route("/api/post/{id}/reviews", name="api_post_get_item", methods={"GET"})
+     * @Route("/api/post/{id}/reviews", name="api_review_get_item", methods={"GET"})
      */
     public function getItem(?Post $post, ReviewRepository $reviewRepository)
     {

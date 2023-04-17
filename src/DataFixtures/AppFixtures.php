@@ -9,21 +9,24 @@ use App\Entity\Genre;
 use App\Entity\Review;
 use App\Entity\Category;
 use App\Entity\Favorites;
+use Doctrine\DBAL\Connection;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\DataFixtures\Provider\WriterTalentProvider;
-use Doctrine\DBAL\Connection;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class AppFixtures extends Fixture
 {
 
     private $connection;
+    private $slugger;
     
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, SluggerInterface $SluggerInterface)
     {
         // On récupère la connexion à la BDD (DBAL ~= PDO)
         // pour exécuter des requêtes manuelles en SQL pur
         $this->connection = $connection;
+        $this->slugger = $SluggerInterface;
 
     }
 
@@ -108,6 +111,7 @@ class AppFixtures extends Fixture
         foreach ($categories as $categoryName) {
             $category = new Category;
             $category->setName($categoryName);
+            $category->setSlug($this->slugger->slug($category->getName())->lower());
             $categoryListObject[] = $category;
             $manager->persist($category);
         }
@@ -128,6 +132,7 @@ class AppFixtures extends Fixture
         foreach ($genres as $genreName) {
             $genre = new Genre;
             $genre->setName($genreName);
+            $genre->setSlug($this->slugger->slug($genre->getName())->lower());
             $genreListObject[] = $genre;
             $manager->persist($genre);
         }
@@ -142,6 +147,7 @@ class AppFixtures extends Fixture
             $post->setStatus(random_int(0,2));
             $post->setUser($faker->randomElement($userListObject));
             $post->setGenre($faker->randomElement($genreListObject));
+            $post->setSlug($this->slugger->slug($post->getTitle())->lower());
 
             // categories associated
             // creation of a variable randomCategories between 1 and 3 categories of the categoryListObject

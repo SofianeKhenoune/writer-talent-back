@@ -88,6 +88,12 @@ class Post
      */
     private $reviews;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups({"get_post"})
+     */
+    private $slug;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -261,6 +267,18 @@ class Post
                 $review->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

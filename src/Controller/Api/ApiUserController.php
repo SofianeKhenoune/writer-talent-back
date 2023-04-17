@@ -96,11 +96,11 @@ class ApiUserController extends AbstractController
         $authorList = [];
 
         // boucle on all publicated post to get their user
-        foreach ($allPulicatedPosts as $postOublicated) {
+        foreach ($allPulicatedPosts as $postPublicated) {
             // if the user does not already belong to the authorlist then push him in the author list
-            if(!in_array($postOublicated->getUser(), $authorList)) 
+            if(!in_array($postPublicated->getUser(), $authorList)) 
             {
-                $authorList[] = $postOublicated->getUser();
+                $authorList[] = $postPublicated->getUser();
             }
         }
 
