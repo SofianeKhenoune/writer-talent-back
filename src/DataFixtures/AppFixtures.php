@@ -12,11 +12,46 @@ use App\Entity\Favorites;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\DataFixtures\Provider\WriterTalentProvider;
+use Doctrine\DBAL\Connection;
 
 class AppFixtures extends Fixture
 {
+
+    private $connection;
+    
+    public function __construct(Connection $connection)
+    {
+        // On récupère la connexion à la BDD (DBAL ~= PDO)
+        // pour exécuter des requêtes manuelles en SQL pur
+        $this->connection = $connection;
+
+    }
+
+        /**
+     * Permet de TRUNCATE les tables et de remettre les AI à 1
+     */
+    private function truncate()
+    {
+        // On passe en mode SQL ! On cause avec MySQL
+        // Désactivation la vérification des contraintes FK
+        $this->connection->executeQuery('SET foreign_key_checks = 0');
+        // On tronque
+        $this->connection->executeQuery('TRUNCATE TABLE category');
+        $this->connection->executeQuery('TRUNCATE TABLE genre');
+        $this->connection->executeQuery('TRUNCATE TABLE favoris');
+        $this->connection->executeQuery('TRUNCATE TABLE post');
+        $this->connection->executeQuery('TRUNCATE TABLE post_category');
+        $this->connection->executeQuery('TRUNCATE TABLE review');
+        $this->connection->executeQuery('TRUNCATE TABLE toReadLater');
+        $this->connection->executeQuery('TRUNCATE TABLE user');
+        // etc.
+    }
+
     public function load(ObjectManager $manager): void
     {
+
+        // On TRUNCATE manuellement
+        $this->truncate();
 
         $faker = Factory::create('fr_FR');
 
