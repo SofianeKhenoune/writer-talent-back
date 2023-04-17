@@ -31,7 +31,6 @@ class Category
 
     /**
      * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="categories")
-     * @Groups({"get_post"})
      */
     private $posts;
 

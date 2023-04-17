@@ -31,13 +31,12 @@ class Genre
 
     /**
      * @ORM\OneToMany(targetEntity=Post::class, mappedBy="genre", orphanRemoval=true)
-     * @Groups({"get_post"})
      */
     private $posts;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"get_post", "get_item"})
+     * 
      */
     private $slug;
 

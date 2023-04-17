@@ -216,7 +216,7 @@ class ApiUserController extends AbstractController
         );
     }
 
-        /**
+    /**
      * road to get all to read posts from a given user
      * @Route("/api/user/{id}/toread", name="api_user_posts_toread", methods={"GET"})    
      */
@@ -303,10 +303,10 @@ class ApiUserController extends AbstractController
         
         $user->removeToReadPost($post);
 
-        // save
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($user);
-        $entityManager->flush();
+            // save
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
 
         return $this->json(
             $user->getToReadPosts(),

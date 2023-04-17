@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
+use App\Repository\PostRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,9 +31,9 @@ class ApiCategoryController extends AbstractController
      * road to get all posts from a given categories
      * @Route("/api/category/{id}/posts", name="api_postsByCategory_get", methods={"GET"})
      */
-    public function getPosts(Category $category)
+    public function getPosts(Category $category, PostRepository $postRepository)
     {
-        $posts = $category->getPosts();
+        $posts = $postRepository->findAllPublicatedByGenre($category);
 
 
         return $this->json(

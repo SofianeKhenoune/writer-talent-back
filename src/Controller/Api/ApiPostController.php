@@ -22,33 +22,33 @@ class ApiPostController extends AbstractController
     public function getItem(?Post $post, ManagerRegistry $doctrine)
     {
 
-    if(!$post) 
-    {
-        return $this->json([
-            'error' => "écrit non trouvé",
-            response::HTTP_NOT_FOUND
-        ]);
-    }
+        if(!$post) 
+        {
+            return $this->json([
+                'error' => "écrit non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
 
-    else
-    {
-        // update nbViews
-        $nbViews = $post->getNbViews();
-        $post->setNbViews($nbViews+1);
+        else
+        {
+            // update nbViews
+            $nbViews = $post->getNbViews();
+            $post->setNbViews($nbViews+1);
 
-        // save the modification of the entity
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($post);
-        $entityManager->flush();
+            // save the modification of the entity
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
 
 
-        return $this->json(
-            $post,
-            200,
-            [],
-            ['groups' => 'get_post']
-        );
-    }
+            return $this->json(
+                $post,
+                200,
+                [],
+                ['groups' => 'get_post']
+            );
+        }
     }
 
     /**
@@ -237,90 +237,93 @@ class ApiPostController extends AbstractController
      * road to set a status from a given post to 2 (publicated)
      * @Route("/api/post/{id}/publicated", name="api_post_update_status_publicated", methods={"PUT"})
      */
-    public function setStatutsToPublicated(ManagerRegistry $doctrine, ?Post $post){
+    public function setStatutsToPublicated(ManagerRegistry $doctrine, ?Post $post)
+    {
 
         if(!$post) 
-    {
-        return $this->json([
-            'error' => "status non trouvé",
-            response::HTTP_NOT_FOUND
-        ]);
-    }
+        {
+            return $this->json([
+                'error' => "status non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
 
-    else
-    {
-        // update status
-        $post->setStatus(2);
+        else
+        {
+            // update status
+            $post->setStatus(2);
 
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($post);
-        $entityManager->flush();
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
 
-        return $this->json(
-            [],
-            Response::HTTP_NO_CONTENT,
-        );
-    }
+            return $this->json(
+                [],
+                Response::HTTP_NO_CONTENT,
+            );
+        }
     }
 
     /**
      * road to set a status from a given post to 1 (awaiting for publication)
      * @Route("/api/post/{id}/awaiting", name="api_post_update_status_awaiting", methods={"PUT"})
      */
-    public function setStatutsToAwaiting(ManagerRegistry $doctrine, ?Post $post){
+    public function setStatutsToAwaiting(ManagerRegistry $doctrine, ?Post $post)
+    {
 
         if(!$post) 
-    {
-        return $this->json([
-            'error' => "status non trouvé",
-            response::HTTP_NOT_FOUND
-        ]);
-    }
+        {
+            return $this->json([
+                'error' => "status non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
 
-    else
-    {
-        // update status
-        $post->setStatus(1);
+        else
+        {
+            // update status
+            $post->setStatus(1);
 
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($post);
-        $entityManager->flush();
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
 
-        return $this->json(
-            [],
-            Response::HTTP_NO_CONTENT,
-        );
-    }
+            return $this->json(
+                [],
+                Response::HTTP_NO_CONTENT,
+            );
+        }
     }
 
     /**
      * road to set a status from a given post to 0 (saved)
      * @Route("/api/post/{id}/saved", name="api_post_update_status_saved", methods={"PUT"})
      */
-    public function setStatutsToSaved(ManagerRegistry $doctrine, ?Post $post){
+    public function setStatutsToSaved(ManagerRegistry $doctrine, ?Post $post)
+    {
 
         if(!$post) 
-    {
-        return $this->json([
-            'error' => "status non trouvé",
-            response::HTTP_NOT_FOUND
-        ]);
-    }
+        {
+            return $this->json([
+                'error' => "status non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
 
-    else
-    {
-        // update status
-        $post->setStatus(0);
+        else
+        {
+            // update status
+            $post->setStatus(0);
 
-        $entityManager = $doctrine->getManager();
-        $entityManager->persist($post);
-        $entityManager->flush();
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
 
-        return $this->json(
-            [],
-            Response::HTTP_NO_CONTENT,
-        );
-    }
+            return $this->json(
+                [],
+                Response::HTTP_NO_CONTENT,
+            );
+        }
     }
 
 

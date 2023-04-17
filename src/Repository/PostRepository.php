@@ -102,6 +102,32 @@ class PostRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
+    /**
+     * Get all posts publicated frm a given genre
+     */
+    public function findAllPublicatedByGenre($genre)
+    {
+        $query = $this->createQueryBuilder('p')
+        ->Where('p.status = 2')
+        ->andWhere('p.genre = :genre')
+        ->setParameter('genre', $genre);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Get all posts publicated frm a given genre
+     */
+    public function findAllPublicatedByCategory($category)
+    {
+        $query = $this->createQueryBuilder('p')
+        ->Where('p.status = 2')
+        ->andWhere('p.category = :category')
+        ->setParameter('category', $category);
+
+        return $query->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Post[] Returns an array of Post objects
 //     */

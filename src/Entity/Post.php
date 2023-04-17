@@ -67,6 +67,8 @@ class Post
     /**
      * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"get_post"})
+     * 
      */
     private $genre;
 
@@ -79,6 +81,8 @@ class Post
 
     /**
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="posts")
+     * @Groups({"get_post"})
+     * 
      */
     private $categories;
 
