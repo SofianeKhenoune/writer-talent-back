@@ -209,8 +209,6 @@ class ApiPostController extends AbstractController
     {
         $recentPosts = $postRepository->findMostRecent();
 
-
-
         return $this->json(
             $recentPosts,
             200,
@@ -222,7 +220,7 @@ class ApiPostController extends AbstractController
 
     /**
      * road to set a status from a given post to 2 (publicated)
-     * @Route("/api/post/{id}/publicated", name="api_post_update_status_publicated", methods={"PUT"})
+     * @Route("/api/post/{id}/published", name="api_post_update_status_publicated", methods={"PUT"})
      */
     public function setStatutsToPublicated(ManagerRegistry $doctrine, ?Post $post)
     {

@@ -7,10 +7,15 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use App\Repository\PostRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 class ApiUserController extends AbstractController
@@ -130,6 +135,8 @@ class ApiUserController extends AbstractController
                 response::HTTP_NOT_FOUND
             ]);
         }
+
+        dd($user);
 
         $favoritePosts = $user->getFavoritesPosts();
 
@@ -416,5 +423,58 @@ class ApiUserController extends AbstractController
                 [],
             );
         }
+    }
+
+    /**
+     * road to create a user
+     * @Route("/api/user/new", name="api_user_new", methods={"POST"})
+     */
+    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, UserPasswordHasherInterface $userPasswordHasher)
+    {
+
+        $jsonContent = $request->getContent();
+
+        try 
+        {
+        // deserialize le json into post entity
+            $user = $serializer->deserialize($jsonContent, User::class, 'json');
+        } 
+        catch (NotEncodableValueException $e) 
+        {
+            return $this->json(
+                ["error" => "JSON INVALIDE"],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $user->setRoles(['ROLE_USER']);
+        $password = $user->getPassword();
+        $passwordHashed = $userPasswordHasher->hashPassword($user, $password);
+        $user->setPassword($passwordHashed);
+
+
+        $errors = $validatorInterface->validate($user);
+
+        if(count($errors) > 0)
+        {
+            return $this->json(
+                $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+
+
+        // save
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+
+        return $this->json(
+            $user,
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => 'get_post']
+        );
     }
 }
