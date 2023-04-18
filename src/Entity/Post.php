@@ -101,7 +101,7 @@ class Post
     /**
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="liked")
      */
-    private $userLiked;
+    private $likedBy;
 
     public function __construct()
     {
@@ -111,7 +111,7 @@ class Post
         $this->nbViews = 0;
         $this->status = 0;
         $this->createdAt = new DateTime();
-        $this->userLiked = new ArrayCollection();
+        $this->likedBy = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -296,15 +296,15 @@ class Post
     /**
      * @return Collection<int, User>
      */
-    public function getLikedPost(): Collection
+    public function getLikedBy(): Collection
     {
-        return $this->userLiked;
+        return $this->likedBy;
     }
 
     public function addLikedPost(User $likedPost): self
     {
-        if (!$this->userLiked->contains($likedPost)) {
-            $this->userLiked[] = $likedPost;
+        if (!$this->likedBy->contains($likedPost)) {
+            $this->likedBy[] = $likedPost;
             $likedPost->addLiked($this);
         }
 
@@ -313,7 +313,7 @@ class Post
 
     public function removeLikedPost(User $likedPost): self
     {
-        if ($this->userLiked->removeElement($likedPost)) {
+        if ($this->likedBy->removeElement($likedPost)) {
             $likedPost->removeLiked($this);
         }
 

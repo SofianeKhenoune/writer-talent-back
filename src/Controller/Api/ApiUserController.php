@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
+
 class ApiUserController extends AbstractController
 {
     /**
@@ -396,7 +397,7 @@ class ApiUserController extends AbstractController
         {
 
             // if the association between the post and the user already exist then decrement the nbLike of the post
-            // preventing a user to be able to dislike a post more than one time 
+            // preventing a user to be able t* @isGranted("ROLE_ADMIN", message="Vous devez être un administrateur")o dislike a post more than one time 
             if($user->getLiked()->contains($post))
             {
                 $nbLikes = $post->getNbLikes();

@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ApiPostController extends AbstractController
 {
@@ -296,6 +297,7 @@ class ApiPostController extends AbstractController
     /**
      * road to get the number of like on a given post
      * @Route("/api/post/{id}/like", name="api_post-like", methods={"GET"})
+     * @isGranted("ROLE_ADMIN", message="Vous devez être un administrateur")
      */
     public function getNbLike(?Post $post): Response
     {
@@ -307,7 +309,7 @@ class ApiPostController extends AbstractController
             ]);
         }
 
-        $nbLike = $post->getNbLikes();
+        $nbLike = $post->getLikedBy()->count();
 
         return $this->json(
             $nbLike,
