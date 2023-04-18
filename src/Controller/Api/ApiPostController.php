@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use DateTime;
 use App\Entity\Post;
 use App\Repository\PostRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -10,9 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ApiPostController extends AbstractController
 {
@@ -200,6 +201,24 @@ class ApiPostController extends AbstractController
         );
     }
 
+    /**
+     * road to get the most recent publicated post (30days)
+     * @Route("/api/posts/recent", name="api_post_get_recent", methods={"GET"})
+     */
+    public function getMostRecent(PostRepository $postRepository)
+    {
+        $recentPosts = $postRepository->findMostRecent();
+
+
+
+        return $this->json(
+            $recentPosts,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
 
     /**
      * road to set a status from a given post to 2 (publicated)
@@ -220,6 +239,7 @@ class ApiPostController extends AbstractController
         {
             // update status
             $post->setStatus(2);
+            $post->setPublishedAt(new DateTime());
 
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);

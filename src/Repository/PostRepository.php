@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use DateInterval;
 use App\Entity\Post;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -92,7 +94,7 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all posts publicated
+     * Get all posts published
      */
     public function findAllPublicated()
     {
@@ -100,6 +102,29 @@ class PostRepository extends ServiceEntityRepository
         ->Where('p.status = 2');
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Get all post published less than a month ago
+     */
+    public function findMostRecent()
+    {
+        $now = new DateTimeImmutable();
+        $thirtyDaysAgo = $now->sub(new DateInterval("P30D"));
+
+        $qb = $this->createQueryBuilder('p');
+
+        $qb
+        ->add('where', $qb->expr()->between(
+            'p.publishedAt',
+            ':from',
+            ':to'
+            )
+        )
+        ->setParameters(array('from' => $thirtyDaysAgo, 'to' => $now));
+
+ 
+        return $qb->getQuery()->getResult();
     }
 
     /**
