@@ -296,7 +296,7 @@ class ApiPostController extends AbstractController
 
     /**
      * road to get the number of like on a given post
-     * @Route("/api/post/{id}/like", name="api_post-like", methods={"GET"})
+     * @Route("/api/post/{id}/like", name="api_post_like", methods={"GET"})
      * @isGranted("ROLE_ADMIN", message="Vous devez être un administrateur")
      */
     public function getNbLike(?Post $post): Response
@@ -317,8 +317,4 @@ class ApiPostController extends AbstractController
             [],
         );
     }
-
-
-
-
 }
