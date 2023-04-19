@@ -58,6 +58,9 @@ class ApiPostController extends AbstractController
      */
     public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface)
     {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
         // get the json
         $jsonContent = $request->getContent();
 
@@ -74,6 +77,7 @@ class ApiPostController extends AbstractController
             );
         }
 
+        $post->setUser($user);
         $errors = $validatorInterface->validate($post);
 
         if(count($errors) > 0)
