@@ -63,7 +63,7 @@ class ApiPostController extends AbstractController
 
         try 
         {
-        // deserialize le json into post entity
+        // deserialize the json into post entity
         $post = $serializer->deserialize($jsonContent, Post::class, 'json');
         } 
         catch (NotEncodableValueException $e) 
@@ -84,7 +84,7 @@ class ApiPostController extends AbstractController
         }
 
 
-        // save
+        // save the modification of the entity
         $entityManager = $doctrine->getManager();
         $entityManager->persist($post);
         $entityManager->flush();
@@ -149,7 +149,7 @@ class ApiPostController extends AbstractController
 
             try 
             {
-            // deserialize le json into post entity
+            // deserialize the json into post entity
             $postModified = $serializer->deserialize($jsonContent, Post::class, 'json', ['object_to_populate' => $post]);
 
             } 
@@ -170,6 +170,7 @@ class ApiPostController extends AbstractController
                 );
             }
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($postModified);
             $entityManager->flush();
@@ -190,8 +191,6 @@ class ApiPostController extends AbstractController
     public function getRandomItem(PostRepository $postRepository)
     {
         $randomPost = $postRepository->findOneRandomPost();
-
-
 
         return $this->json(
             $randomPost,
@@ -239,6 +238,7 @@ class ApiPostController extends AbstractController
             $post->setStatus(2);
             $post->setPublishedAt(new DateTime());
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
@@ -270,6 +270,7 @@ class ApiPostController extends AbstractController
             // update status
             $post->setStatus(1);
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
@@ -301,6 +302,7 @@ class ApiPostController extends AbstractController
             // update status
             $post->setStatus(0);
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();

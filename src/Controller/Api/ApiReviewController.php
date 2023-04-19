@@ -18,16 +18,28 @@ class ApiReviewController extends AbstractController
 {
     /**
      * road to create a review on a post
-     * @Route("/api/review", name="api_review_create_item", methods={"POST"})
+     * @Route("/api/review/post/{id}", name="api_review_create_item", methods={"POST"})
      */
-    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface)
+    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, ?Post $post)
     {
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$post) 
+        {
+            return $this->json([
+                'error' => "status non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
         // get the json
         $jsonContent = $request->getContent();
 
         try 
         {
-        // deserialize le json into post entity
+        // deserialize the json into post entity
         $review = $serializer->deserialize($jsonContent, Review::class, 'json');
         } 
         catch (NotEncodableValueException $e) 
@@ -37,6 +49,9 @@ class ApiReviewController extends AbstractController
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
+
+        $review->setUser($user);
+        $review->setPost($post);
 
         $errors = $validatorInterface->validate($review);
 
@@ -48,7 +63,7 @@ class ApiReviewController extends AbstractController
         }
 
 
-        // save
+        // save the modification of the entity
         $entityManager = $doctrine->getManager();
         $entityManager->persist($review);
         $entityManager->flush();
@@ -66,7 +81,7 @@ class ApiReviewController extends AbstractController
      * road to get all reviews from a given post
      * @Route("/api/post/{id}/reviews", name="api_review_get_item", methods={"GET"})
      */
-    public function getItem(?Post $post, ReviewRepository $reviewRepository)
+    public function getCollection(?Post $post, ReviewRepository $reviewRepository)
     {
         if(!$post) 
         {
@@ -96,6 +111,9 @@ class ApiReviewController extends AbstractController
     public function deleteItem(ManagerRegistry $doctrine, ?Review $review)
     {
 
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
         if(!$review) 
         {
             return $this->json([
@@ -104,8 +122,8 @@ class ApiReviewController extends AbstractController
             ]);
         }
 
-
-        else
+        // permit removing if the user connected is the author of the review
+        elseif ($user === $review->getUser())
         {
             // save the modification of the entity
             $entityManager = $doctrine->getManager();
@@ -117,6 +135,14 @@ class ApiReviewController extends AbstractController
                 [],
                 204,
             );
+        }
+
+        else 
+        {
+            return $this->json([
+                'error' => "Vous n'êtes pas l'auteur de cet avis",
+                response::HTTP_FORBIDDEN
+            ]);
         }
     }
 
