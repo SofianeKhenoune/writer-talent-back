@@ -6,23 +6,75 @@ use App\Entity\Post;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 class ApiUserController extends AbstractController
 {
+    /**
+     * road to create a user on a post
+     * @Route("/api/user", name="api_user_create_user", methods={"POST"})
+     */
+    public function createUser(Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface, ?User $user, UserRepository $userRepository, UserPasswordHasherInterface $userPasswordHasher, ManagerRegistry $doctrine): Response
+    {
+
+        // get the json
+        $jsonContent = $request->getContent();
+
+        try {
+            $user = $serializer->deserialize($jsonContent, User::class, 'json');
+        } catch (NotEncodableValueException $e) {
+            return $this->json(
+                ["error" => "JSON INVALIDE"],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $errors = $validatorInterface->validate($user);
+
+        if (count($errors) > 0) {
+            return $this->json(
+                $errors,
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $hashedPassword = $userPasswordHasher->hashPassword($user, $user->getPassword());
+
+        $user = new User();
+        $user->setPassword($hashedPassword);
+
+        $userRepository->add($user, true);
+
+        $this->addFlash('success', "{$user->getUsername()} utilisateur ajouté.");
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json(
+            $user,
+            Response::HTTP_CREATED,
+            [],
+        );
+    }
+
     /**
      * road to get all posts publicated from a given user
      * @Route("/api/user/{id}/posts/published", name="api_user_posts_publicated", methods={"GET"})
      */
     public function getPublicatedPost(?User $user, PostRepository $postRepository): Response
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -45,8 +97,7 @@ class ApiUserController extends AbstractController
      */
     public function getAwaitingPost(?User $user, PostRepository $postRepository): Response
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -70,8 +121,7 @@ class ApiUserController extends AbstractController
      */
     public function getSavedPost(?User $user, PostRepository $postRepository): Response
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -103,8 +153,7 @@ class ApiUserController extends AbstractController
         // boucle on all publicated post to get their user
         foreach ($allPulicatedPosts as $postPublicated) {
             // if the user does not already belong to the authorlist then push him in the author list
-            if(!in_array($postPublicated->getUser(), $authorList)) 
-            {
+            if (!in_array($postPublicated->getUser(), $authorList)) {
                 $authorList[] = $postPublicated->getUser();
             }
         }
@@ -123,8 +172,7 @@ class ApiUserController extends AbstractController
      */
     public function getFavoritesPost(?User $user): Response
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -148,16 +196,12 @@ class ApiUserController extends AbstractController
      */
     public function addFavoritePost(?User $user, ?Post $post, ManagerRegistry $doctrine)
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
-        }
-
-        elseif(!$post)
-        {
+        } elseif (!$post) {
             return $this->json([
                 'error' => "post non trouvé",
                 response::HTTP_NOT_FOUND
@@ -186,22 +230,18 @@ class ApiUserController extends AbstractController
      */
     public function removeFavoritePost(?User $user, ?Post $post, ManagerRegistry $doctrine)
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
-        }
-
-        elseif(!$post)
-        {
+        } elseif (!$post) {
             return $this->json([
                 'error' => "post non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
         }
-        
+
         $user->removeFavoritesPost($post);
 
         // save
@@ -223,8 +263,7 @@ class ApiUserController extends AbstractController
      */
     public function getToreadPost(?User $user): Response
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -248,16 +287,12 @@ class ApiUserController extends AbstractController
      */
     public function addToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
-        }
-
-        elseif(!$post)
-        {
+        } elseif (!$post) {
             return $this->json([
                 'error' => "post non trouvé",
                 response::HTTP_NOT_FOUND
@@ -286,29 +321,25 @@ class ApiUserController extends AbstractController
      */
     public function removeToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
     {
-        if(!$user) 
-        {
+        if (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
-        }
-
-        elseif(!$post)
-        {
+        } elseif (!$post) {
             return $this->json([
                 'error' => "post non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
         }
 
-        
+
         $user->removeToReadPost($post);
 
-            // save
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+        // save
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
 
         return $this->json(
             $user->getToReadPosts(),
@@ -326,32 +357,24 @@ class ApiUserController extends AbstractController
     public function addLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {
 
-        if(!$post) 
-        {
+        if (!$post) {
             return $this->json([
                 'error' => "écrit non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
-        }
-
-        elseif(!$user)
-        {
+        } elseif (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
-        }
-
-        else
-        {
+        } else {
 
             // if the association between the post liked and the user does not exist already then increment the nbLike of the post
             // preventing a user to be able to like a post more than one time 
 
-            if(!$user->getLiked()->contains($post))
-            {
+            if (!$user->getLiked()->contains($post)) {
                 $nbLikes = $post->getNbLikes();
-                $post->setNbLikes($nbLikes+1);
+                $post->setNbLikes($nbLikes + 1);
             }
 
             // add the association in the DB
@@ -377,33 +400,25 @@ class ApiUserController extends AbstractController
     public function removeLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {
 
-        if(!$post) 
-        {
+        if (!$post) {
             return $this->json([
                 'error' => "écrit non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
-        }
-
-        elseif(!$user)
-        {
+        } elseif (!$user) {
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
-        }
-
-        else
-        {
+        } else {
 
             // if the association between the post and the user already exist then decrement the nbLike of the post
             // preventing a user to be able t* @isGranted("ROLE_ADMIN", message="Vous devez être un administrateur")o dislike a post more than one time 
-            if($user->getLiked()->contains($post))
-            {
+            if ($user->getLiked()->contains($post)) {
                 $nbLikes = $post->getNbLikes();
-                $post->setNbLikes($nbLikes-1);
+                $post->setNbLikes($nbLikes - 1);
             }
-            
+
             $user->removeLiked($post);
 
             $entityManager = $doctrine->getManager();
