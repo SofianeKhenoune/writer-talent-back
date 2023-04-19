@@ -110,9 +110,7 @@ class ApiReviewController extends AbstractController
      */
     public function deleteItem(ManagerRegistry $doctrine, ?Review $review)
     {
-
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
+        $this->denyAccessUnlessGranted('REMOVE', $review);
 
         if(!$review) 
         {
@@ -122,9 +120,6 @@ class ApiReviewController extends AbstractController
             ]);
         }
 
-        // permit removing if the user connected is the author of the review
-        elseif ($user === $review->getUser())
-        {
             // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->remove($review);
@@ -135,15 +130,7 @@ class ApiReviewController extends AbstractController
                 [],
                 204,
             );
-        }
 
-        else 
-        {
-            return $this->json([
-                'error' => "Vous n'êtes pas l'auteur de cet avis",
-                response::HTTP_FORBIDDEN
-            ]);
-        }
     }
 
 

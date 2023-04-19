@@ -375,7 +375,7 @@ class ApiUserController extends AbstractController
 
     /**
      * road to add a like on a given post from a given user
-     * @Route("/api/post/{id}/like", name="api_user_add_like", methods={"PUT"})
+     * @Route("/api/user/post/{id}/like", name="api_user_add_like", methods={"PUT"})
      */
     public function addLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {
@@ -428,7 +428,7 @@ class ApiUserController extends AbstractController
 
     /**
      * road to remove a like on a given post from a given user
-     * @Route("/api/post/{id}/like", name="api_user_remove_like", methods={"DELETE"})
+     * @Route("/api/user/post/{id}/like", name="api_user_remove_like", methods={"DELETE"})
      */
     public function removeLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {

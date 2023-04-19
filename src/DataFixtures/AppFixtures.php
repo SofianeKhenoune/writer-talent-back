@@ -71,7 +71,6 @@ class AppFixtures extends Fixture
         $admin->setUsername('admin');
         $admin->setRoles(['ROLE_ADMIN']);
         $admin->setPassword('$2y$13$DSSsUzmA93bTy7/VJLfsYedZ0xw0Rj9NggOEgZu3t9XM3r2zeizKm');
-        $userListObject[] = $admin;
         $manager->persist($admin);
         
         // moderator
@@ -80,17 +79,17 @@ class AppFixtures extends Fixture
         $moderator->setUsername('modérateur');
         $moderator->setRoles(['ROLE_MODERATEUR']);
         $moderator->setPassword('$2y$13$DSSsUzmA93bTy7/$2y$13$1PKtDCZsV2OnYUF9/gQb4OfNTioRReeMU1l9md9j7eEyj5sSNX7Ma');
-        $userListObject[] = $moderator;
         $manager->persist($moderator);
 
-        // user
-        $user = new User();
-        $user->setEmail('user@user.com');
-        $user->setUsername('user');
-        $user->setRoles(['ROLE_USER']);
-        $user->setPassword('$2y$13$hZ3FlM1mdghpaRz1.iFNDORLnzdbypiTk9QxfNFfMfYQx8gnIahoq');
-        $userListObject[] = $user;
-        $manager->persist($user);
+        for ($i=0; $i < 10; $i++) { 
+            $user = new User();
+            $user->setEmail('user'.$i.'@user.com');
+            $user->setUsername('user'.$i);
+            $user->setRoles(['ROLE_USER']);
+            $user->setPassword('$2y$13$hZ3FlM1mdghpaRz1.iFNDORLnzdbypiTk9QxfNFfMfYQx8gnIahoq');
+            $userListObject[$user] = 'user'.$i;
+            $manager->persist($user);
+        }
 
 
         // categories

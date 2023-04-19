@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
+
 /**
  * @extends ServiceEntityRepository<Post>
  *
@@ -149,6 +150,19 @@ class PostRepository extends ServiceEntityRepository
         ->Where('p.status = 2')
         ->andWhere('p.category = :category')
         ->setParameter('category', $category);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Get most liked posts (limit 4)
+     */
+    public function findMostLiked()
+    {
+        $query = $this->createQueryBuilder('p')
+        ->Where('p.status = 2')
+        ->orderBy('p.nbLikes', 'DESC')
+        ->setMaxResults(4);
 
         return $query->getQuery()->getResult();
     }

@@ -5,10 +5,11 @@ namespace App\Controller\Backoffice;;
 use App\Entity\Genre;
 use App\Form\GenreType;
 use App\Repository\GenreRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 /**
@@ -29,13 +30,14 @@ class GenreController extends AbstractController
     /**
      * @Route("/new", name="app_genre_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, GenreRepository $genreRepository): Response
+    public function new(Request $request, GenreRepository $genreRepository, SluggerInterface $SluggerInterface): Response
     {
         $genre = new Genre();
         $form = $this->createForm(GenreType::class, $genre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $genre->setSlug($SluggerInterface->slug($genre->getName())->lower());
             $genreRepository->add($genre, true);
             $this->addFlash('success', "<b>{$genre->getName()}</b> ajouté.");
 
@@ -61,12 +63,14 @@ class GenreController extends AbstractController
     /**
      * @Route("/{id}/edit", name="app_genre_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Genre $genre, GenreRepository $genreRepository): Response
+    public function edit(Request $request, Genre $genre, GenreRepository $genreRepository, SluggerInterface $SluggerInterface): Response
     {
         $form = $this->createForm(GenreType::class, $genre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $genre->setSlug($SluggerInterface->slug($genre->getName())->lower());
+
             $genreRepository->add($genre, true);
 
             return $this->redirectToRoute('app_genre_index', [], Response::HTTP_SEE_OTHER);
