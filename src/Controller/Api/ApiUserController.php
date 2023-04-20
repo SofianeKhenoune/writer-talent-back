@@ -134,20 +134,31 @@ class ApiUserController extends AbstractController
      */
     public function getAuthors(PostRepository $postRepository)
     {
-        // get all publicated post 
-        $allPulicatedPosts = $postRepository->findAllPublicated();
+    // get all publicated post
+    $allPulicatedPosts = $postRepository->findAllPublicated();
 
-        // creation of an empty table authorList
-        $authorList = [];
+    // creation of an empty table authorList
+    $authorList = [];
 
-        // boucle on all publicated post to get their user
-        foreach ($allPulicatedPosts as $postPublicated) {
-            // if the user does not already belong to the authorlist then push him in the author list
-            if(!in_array($postPublicated->getUser(), $authorList)) 
-            {
-                $authorList[] = $postPublicated->getUser();
-            }
+    // boucle on all publicated post to get their user
+    foreach ($allPulicatedPosts as $postPublicated) {
+        // if the user does not already belong to the authorlist then push him in the author list
+        if(!in_array($postPublicated->getUser(), $authorList))
+        {
+            $authorList[] = $postPublicated->getUser();
         }
+    }
+
+
+        // foreach ($allPulicatedPosts as $postPublicated) {
+
+        //         $authorList[] = [
+        //             'user' => $postPublicated->getUser(),
+        //             'nbPostPublicated' => $postPublicated->getUser()->getPosts()->count()
+        //         ];
+
+        // }
+
 
         return $this->json(
             $authorList,
