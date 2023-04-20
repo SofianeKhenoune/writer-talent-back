@@ -305,7 +305,7 @@ class ApiUserController extends AbstractController
         if(!$user) 
         {
             return $this->json([
-                'error' => "utilisateur non trouvé",
+                'error' => "utilisateur non trouvé.",
                 response::HTTP_NOT_FOUND
             ]);
         }
