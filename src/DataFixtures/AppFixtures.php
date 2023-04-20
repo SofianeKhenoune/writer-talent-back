@@ -81,13 +81,13 @@ class AppFixtures extends Fixture
         $moderator->setPassword('$2y$13$DSSsUzmA93bTy7/$2y$13$1PKtDCZsV2OnYUF9/gQb4OfNTioRReeMU1l9md9j7eEyj5sSNX7Ma');
         $manager->persist($moderator);
 
-        for ($i=0; $i < 10; $i++) { 
+        for ($i=1; $i < 11; $i++) { 
             $user = new User();
             $user->setEmail('user'.$i.'@user.com');
             $user->setUsername('user'.$i);
             $user->setRoles(['ROLE_USER']);
             $user->setPassword('$2y$13$hZ3FlM1mdghpaRz1.iFNDORLnzdbypiTk9QxfNFfMfYQx8gnIahoq');
-            $userListObject[$user] = 'user'.$i;
+            $userListObject[] = $user;
             $manager->persist($user);
         }
 
@@ -137,13 +137,23 @@ class AppFixtures extends Fixture
         }
 
         // posts
-        $postListObject = [];
-        for ($p = 1; $p <= 20; $p++) {
+        $allPostsListObject = [];
+        $postPublicatedListObject = [];
+        for ($p = 1; $p <= 30; $p++) {
 
             $post = New Post();
             $post->setTitle($faker->unique()->sentence(7));
-            $post->setContent($faker->text(1000));
+            $post->setContent($faker->text(3000));
             $post->setStatus(random_int(0,2));
+            $post->setCreatedAt($faker->dateTimeInInterval('-4 months' , '-3 months'));
+
+            if($post->getStatus() == 2)
+            {
+                $post->setPublishedAt($faker->dateTimeInInterval('-2 months' , '-1 day'));
+                $post->setNbViews($faker->numberBetween(1,200));
+                $postPublicatedListObject[] = $post;
+            }
+
             $post->setUser($faker->randomElement($userListObject));
             $post->setGenre($faker->randomElement($genreListObject));
             $post->setSlug($this->slugger->slug($post->getTitle())->lower());
@@ -157,8 +167,17 @@ class AppFixtures extends Fixture
                 $post->addCategory($category);
             }
 
-            $postListObject[] = $post;
+            $allPostsListObject[] = $post;
             $manager->persist($post);
+        }
+
+        foreach ($postPublicatedListObject as $postPublicated) {
+            $randomNumber = $faker->numberBetween(1,10);
+            for ($i=1; $i < $randomNumber  ; $i++) { 
+                $postPublicated->addLikedPost($faker->randomElement($userListObject));
+            }
+            $postPublicated->setNbLikes($postPublicated->getLikedBy()->count());
+            $manager->persist($postPublicated);
         }
 
         // review
@@ -169,7 +188,7 @@ class AppFixtures extends Fixture
             $review = New Review();
             $review->setContent($faker->text());
             $review->setUser($faker->randomElement($userListObject));
-            $review->setPost($faker->randomElement($postListObject));
+            $review->setPost($faker->randomElement($postPublicatedListObject));
 
             $reviewListObject[] = $review;
             $manager->persist($review);
@@ -179,7 +198,7 @@ class AppFixtures extends Fixture
         // favorites 
 
         foreach ($userListObject as $userObject) {
-            $randomPosts = $faker->randomElements($postListObject, $faker->numberBetween(1, 3));
+            $randomPosts = $faker->randomElements($postPublicatedListObject, $faker->numberBetween(1, 3));
             foreach ($randomPosts as $post) {
                 $userObject->addFavoritesPost($post);
             }
@@ -188,20 +207,12 @@ class AppFixtures extends Fixture
         // to read later
 
         foreach ($userListObject as $userObject) {
-            $randomPosts = $faker->randomElements($postListObject, $faker->numberBetween(1, 2));
+            $randomPosts = $faker->randomElements($postPublicatedListObject, $faker->numberBetween(1, 2));
             foreach ($randomPosts as $post) {
                 $userObject->addToReadPost($post);
             }
         }
 
-        // liked
-        foreach ($userListObject as $userObject) {
-            $randomPosts = $faker->randomElements($postListObject, $faker->numberBetween(1, 2));
-            foreach ($randomPosts as $post) {
-                $userObject->addLiked($post);
-                $post->setNbLikes(+1);
-            }
-        }
 
         $manager->flush();
     }
