@@ -148,8 +148,8 @@ class PostRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('p')
         ->Where('p.status = 2')
-        ->andWhere('p.category = :category')
-        ->setParameter('category', $category);
+        ->join('p.categories', 'c', 'WITH', 'c.id = :id')
+        ->setParameter('id', $category);
 
         return $query->getQuery()->getResult();
     }

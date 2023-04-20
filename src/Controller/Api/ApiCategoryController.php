@@ -33,7 +33,7 @@ class ApiCategoryController extends AbstractController
      */
     public function getPosts(Category $category, PostRepository $postRepository)
     {
-        $posts = $postRepository->findAllPublicatedByGenre($category);
+        $posts = $postRepository->findAllPublicatedByCategory($category);
 
 
         return $this->json(
