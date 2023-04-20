@@ -145,11 +145,11 @@ class AppFixtures extends Fixture
             $post->setTitle($faker->unique()->sentence(7));
             $post->setContent($faker->text(3000));
             $post->setStatus(random_int(0,2));
-            $post->setCreatedAt($faker->dateTimeInInterval('-4 months' , '-3 months'));
+            $post->setCreatedAt($faker->dateTimeInInterval('-4 months' , '+3 months'));
 
             if($post->getStatus() == 2)
             {
-                $post->setPublishedAt($faker->dateTimeInInterval('-2 months' , '-1 day'));
+                $post->setPublishedAt($faker->dateTimeInInterval('-2 months' , '+2 months'));
                 $post->setNbViews($faker->numberBetween(1,200));
                 $postPublicatedListObject[] = $post;
             }
