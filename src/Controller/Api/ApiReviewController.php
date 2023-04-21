@@ -13,12 +13,14 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ApiReviewController extends AbstractController
 {
     /**
      * road to create a review on a post
      * @Route("/api/review/post/{id}", name="api_review_create_item", methods={"POST"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, ?Post $post)
     {
@@ -107,6 +109,7 @@ class ApiReviewController extends AbstractController
     /**
      * road to delete a review 
      * @Route("/api/review/{id}", name="api_review_delete_item", methods={"DELETE"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function deleteItem(ManagerRegistry $doctrine, ?Review $review)
     {

@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+<<<<<<< HEAD
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 <<<<<<< HEAD
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -21,8 +22,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 =======
+=======
+>>>>>>> 35b62c8bd2ae3cc8a6315fbea3dd94ae07ddbc0d
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 >>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
 
@@ -102,11 +106,13 @@ class ApiUserController extends AbstractController
     /**
      * road to get all posts publicated from a given user
      * @Route("/api/user/posts/published", name="api_user_connected_posts_publicated", methods={"GET"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function getMyPublicatedPostFrom(PostRepository $postRepository): Response
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
+
 
         if(!$user) 
         {
@@ -129,6 +135,7 @@ class ApiUserController extends AbstractController
     /**
      * road to get all posts awaiting of publication from a given user
      * @Route("/api/user/posts/awaiting", name="api_user_connected_posts_awaiting", methods={"GET"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function getMyAwaitingPost(PostRepository $postRepository): Response
     {
@@ -162,6 +169,7 @@ class ApiUserController extends AbstractController
     /**
      * road to get all posts saved from a given user
      * @Route("/api/user/posts/saved", name="api_user_connected_posts_saved", methods={"GET"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function getMySavedPost(PostRepository $postRepository): Response
     {
@@ -242,7 +250,8 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get all favorite posts from a given user
-     * @Route("/api/user/favorites", name="api_user_connected_posts_favorites", methods={"GET"})    
+     * @Route("/api/user/favorites", name="api_user_connected_posts_favorites", methods={"GET"}) 
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")   
      */
     public function getFavoritesPost(): Response
     {
@@ -274,6 +283,7 @@ class ApiUserController extends AbstractController
     /**
      * road to add a favorite post to a given user
      * @Route("/api/user/favorites/post/{id}", name="api_user_connect_posts_favorites_new", methods={"PUT"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function addFavoritePost(?Post $post, ManagerRegistry $doctrine)
     {
@@ -315,6 +325,7 @@ class ApiUserController extends AbstractController
     /**
      * road to remove a favorite post of a given user
      * @Route("/api/user/favorites/post/{id}", name="api_user_connected_posts_favorites_remove", methods={"DELETE"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function removeFavoritePost(?Post $post, ManagerRegistry $doctrine)
     {
@@ -356,7 +367,8 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get all to read posts from a given user
-     * @Route("/api/user/toread", name="api_user_posts_toread", methods={"GET"})    
+     * @Route("/api/user/toread", name="api_user_posts_toread", methods={"GET"})   
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function getToreadPost(): Response
     {
@@ -388,6 +400,7 @@ class ApiUserController extends AbstractController
     /**
      * road to add a post to the to read list of a given user
      * @Route("/api/user/toread/post/{id}", name="api_user_connected_posts_toread_new", methods={"PUT"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function addToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
     {
@@ -430,6 +443,7 @@ class ApiUserController extends AbstractController
     /**
      * road to remove a post from the to read list of a given user
      * @Route("/api/user/toread/post/{id}", name="api_user_connected_posts_toread_remove", methods={"DELETE"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function removeToReadPost(?Post $post, ManagerRegistry $doctrine)
     {
@@ -481,6 +495,7 @@ class ApiUserController extends AbstractController
     /**
      * road to add a like on a given post from a given user
      * @Route("/api/user/post/{id}/like", name="api_user_add_like", methods={"PUT"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function addLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {
@@ -526,11 +541,13 @@ class ApiUserController extends AbstractController
     /**
      * road to remove a like on a given post from a given user
      * @Route("/api/user/post/{id}/like", name="api_user_remove_like", methods={"DELETE"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function removeLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
+        
 
         if (!$post) {
             return $this->json([
@@ -570,7 +587,7 @@ class ApiUserController extends AbstractController
      * road to create a user
      * @Route("/api/user/new", name="api_user_new", methods={"POST"})
      */
-    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, UserPasswordHasherInterface $userPasswordHasher)
+    public function signIn(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, UserPasswordHasherInterface $userPasswordHasher)
     {
 
         $jsonContent = $request->getContent();

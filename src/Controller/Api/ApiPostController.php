@@ -56,6 +56,7 @@ class ApiPostController extends AbstractController
 
     /**
      * @Route("/api/post", name="api_post_create_item", methods={"POST"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, SluggerInterface $SluggerInterface)
     {
@@ -108,6 +109,7 @@ class ApiPostController extends AbstractController
     /**
      * road to delete a post from a given id
      * @Route("/api/post/{id}", name="api_post_delete_item", methods={"DELETE"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function deleteItem(ManagerRegistry $doctrine, ?Post $post)
     {
@@ -140,6 +142,7 @@ class ApiPostController extends AbstractController
     /**
      * road to get a post from a given id
      * @Route("/api/post/{id}", name="api_post_update_item", methods={"PUT"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface, SluggerInterface $sluggerInterface)
     {
@@ -251,6 +254,7 @@ class ApiPostController extends AbstractController
     /**
      * road to set a status from a given post to 2 (publicated)
      * @Route("/api/post/{id}/published", name="api_post_update_status_publicated", methods={"PUT"})
+     * @isGranted("ROLE_MODERATEUR", message="Vous devez être modérateur")
      */
     public function setStatutToPublicated(ManagerRegistry $doctrine, ?Post $post)
     {
@@ -284,6 +288,7 @@ class ApiPostController extends AbstractController
     /**
      * road to set a status from a given post to 1 (awaiting for publication)
      * @Route("/api/post/{id}/awaiting", name="api_post_update_status_awaiting", methods={"PUT"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function setStatutToAwaiting(ManagerRegistry $doctrine, ?Post $post)
     {
@@ -317,6 +322,7 @@ class ApiPostController extends AbstractController
     /**
      * road to set a status from a given post to 0 (saved)
      * @Route("/api/post/{id}/saved", name="api_post_update_status_saved", methods={"PUT"})
+     * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
     public function setStatutToSaved(ManagerRegistry $doctrine, ?Post $post)
     {
@@ -349,7 +355,6 @@ class ApiPostController extends AbstractController
     /**
      * road to get the number of like on a given post
      * @Route("/api/post/{id}/like", name="api_post_like", methods={"GET"})
-     * @isGranted("ROLE_ADMIN", message="Vous devez être un administrateur")
      */
     public function getNbLike(?Post $post): Response
     {
