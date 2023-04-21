@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
@@ -57,7 +58,11 @@ class UserType extends AbstractType
 
 
             })
-            ->add('username')
+            ->add('username', TextType::class , [
+                'label' => 'Nom d\'utilisateur',
+                'empty_data' => ''
+                // if editing and removing all the data
+            ])
         ;
     }
 
