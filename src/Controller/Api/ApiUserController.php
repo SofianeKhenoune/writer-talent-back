@@ -11,12 +11,20 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+<<<<<<< HEAD
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+=======
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
 
 class ApiUserController extends AbstractController
 {
@@ -72,7 +80,7 @@ class ApiUserController extends AbstractController
      * road to get all posts publicated from a given user
      * @Route("/api/user/{id}/posts/published", name="api_user_posts_publicated", methods={"GET"})
      */
-    public function getPublicatedPost(?User $user, PostRepository $postRepository): Response
+    public function getPublicatedPostsFrom(?User $user, PostRepository $postRepository): Response
     {
         if (!$user) {
             return $this->json([
@@ -92,12 +100,48 @@ class ApiUserController extends AbstractController
     }
 
     /**
-     * road to get all posts awaiting of publication from a given user
-     * @Route("/api/user/{id}/posts/awaiting", name="api_user_posts_awaiting", methods={"GET"})
+     * road to get all posts publicated from a given user
+     * @Route("/api/user/posts/published", name="api_user_connected_posts_publicated", methods={"GET"})
      */
-    public function getAwaitingPost(?User $user, PostRepository $postRepository): Response
+    public function getMyPublicatedPostFrom(PostRepository $postRepository): Response
     {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        $postList = $postRepository->findPublicatedPostFromUser($user);
+
+        return $this->json(
+            $postList,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to get all posts awaiting of publication from a given user
+     * @Route("/api/user/posts/awaiting", name="api_user_connected_posts_awaiting", methods={"GET"})
+     */
+    public function getMyAwaitingPost(PostRepository $postRepository): Response
+    {
+<<<<<<< HEAD
         if (!$user) {
+=======
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -117,11 +161,20 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get all posts saved from a given user
-     * @Route("/api/user/{id}/posts/saved", name="api_user_posts_saved", methods={"GET"})
+     * @Route("/api/user/posts/saved", name="api_user_connected_posts_saved", methods={"GET"})
      */
-    public function getSavedPost(?User $user, PostRepository $postRepository): Response
+    public function getMySavedPost(PostRepository $postRepository): Response
     {
+<<<<<<< HEAD
         if (!$user) {
+=======
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -144,19 +197,40 @@ class ApiUserController extends AbstractController
      */
     public function getAuthors(PostRepository $postRepository)
     {
-        // get all publicated post 
-        $allPulicatedPosts = $postRepository->findAllPublicated();
+    // get all publicated post
+    $allPulicatedPosts = $postRepository->findAllPublicated();
 
-        // creation of an empty table authorList
-        $authorList = [];
+    // creation of an empty table authorList
+    $authorList = [];
 
+<<<<<<< HEAD
         // boucle on all publicated post to get their user
         foreach ($allPulicatedPosts as $postPublicated) {
             // if the user does not already belong to the authorlist then push him in the author list
             if (!in_array($postPublicated->getUser(), $authorList)) {
                 $authorList[] = $postPublicated->getUser();
             }
+=======
+    // boucle on all publicated post to get their user
+    foreach ($allPulicatedPosts as $postPublicated) {
+        // if the user does not already belong to the authorlist then push him in the author list
+        if(!in_array($postPublicated->getUser(), $authorList))
+        {
+            $authorList[] = $postPublicated->getUser();
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
         }
+    }
+
+
+        // foreach ($allPulicatedPosts as $postPublicated) {
+
+        //         $authorList[] = [
+        //             'user' => $postPublicated->getUser(),
+        //             'nbPostPublicated' => $postPublicated->getUser()->getPosts()->count()
+        //         ];
+
+        // }
+
 
         return $this->json(
             $authorList,
@@ -168,11 +242,19 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get all favorite posts from a given user
-     * @Route("/api/user/{id}/favorites", name="api_user_posts_favorites", methods={"GET"})    
+     * @Route("/api/user/favorites", name="api_user_connected_posts_favorites", methods={"GET"})    
      */
-    public function getFavoritesPost(?User $user): Response
+    public function getFavoritesPost(): Response
     {
+<<<<<<< HEAD
         if (!$user) {
+=======
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -191,12 +273,19 @@ class ApiUserController extends AbstractController
 
     /**
      * road to add a favorite post to a given user
-     * @Route("/api/user/{id}/favorites/post/{post_id}", name="api_user_post_favorites_new", methods={"PUT"})
-     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     * @Route("/api/user/favorites/post/{id}", name="api_user_connect_posts_favorites_new", methods={"PUT"})
      */
-    public function addFavoritePost(?User $user, ?Post $post, ManagerRegistry $doctrine)
+    public function addFavoritePost(?Post $post, ManagerRegistry $doctrine)
     {
+<<<<<<< HEAD
         if (!$user) {
+=======
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -210,7 +299,7 @@ class ApiUserController extends AbstractController
 
         $user->addFavoritesPost($post);
 
-        // save
+        // save the modification of the entity
         $entityManager = $doctrine->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
@@ -225,12 +314,20 @@ class ApiUserController extends AbstractController
 
     /**
      * road to remove a favorite post of a given user
-     * @Route("/api/user/{id}/favorites/post/{post_id}", name="api_user_post_favorites_remove", methods={"DELETE"})
-     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     * @Route("/api/user/favorites/post/{id}", name="api_user_connected_posts_favorites_remove", methods={"DELETE"})
      */
-    public function removeFavoritePost(?User $user, ?Post $post, ManagerRegistry $doctrine)
+    public function removeFavoritePost(?Post $post, ManagerRegistry $doctrine)
     {
+<<<<<<< HEAD
         if (!$user) {
+=======
+        
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -244,7 +341,7 @@ class ApiUserController extends AbstractController
 
         $user->removeFavoritesPost($post);
 
-        // save
+        // save the modification of the entity
         $entityManager = $doctrine->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
@@ -259,11 +356,19 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get all to read posts from a given user
-     * @Route("/api/user/{id}/toread", name="api_user_posts_toread", methods={"GET"})    
+     * @Route("/api/user/toread", name="api_user_posts_toread", methods={"GET"})    
      */
-    public function getToreadPost(?User $user): Response
+    public function getToreadPost(): Response
     {
+<<<<<<< HEAD
         if (!$user) {
+=======
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -282,14 +387,22 @@ class ApiUserController extends AbstractController
 
     /**
      * road to add a post to the to read list of a given user
-     * @Route("/api/user/{id}/toread/post/{post_id}", name="api_user_post_toread_new", methods={"PUT"})
-     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     * @Route("/api/user/toread/post/{id}", name="api_user_connected_posts_toread_new", methods={"PUT"})
      */
     public function addToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
     {
+<<<<<<< HEAD
         if (!$user) {
+=======
+        
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
             return $this->json([
-                'error' => "utilisateur non trouvé",
+                'error' => "utilisateur non trouvé.",
                 response::HTTP_NOT_FOUND
             ]);
         } elseif (!$post) {
@@ -301,7 +414,7 @@ class ApiUserController extends AbstractController
 
         $user->addToReadPost($post);
 
-        // save
+        // save the modification of the entity
         $entityManager = $doctrine->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
@@ -316,12 +429,19 @@ class ApiUserController extends AbstractController
 
     /**
      * road to remove a post from the to read list of a given user
-     * @Route("/api/user/{id}/toread/post/{post_id}", name="api_user_post_toread_remove", methods={"DELETE"})
-     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     * @Route("/api/user/toread/post/{id}", name="api_user_connected_posts_toread_remove", methods={"DELETE"})
      */
-    public function removeToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
+    public function removeToReadPost(?Post $post, ManagerRegistry $doctrine)
     {
+<<<<<<< HEAD
         if (!$user) {
+=======
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
             return $this->json([
                 'error' => "utilisateur non trouvé",
                 response::HTTP_NOT_FOUND
@@ -333,6 +453,7 @@ class ApiUserController extends AbstractController
             ]);
         }
 
+<<<<<<< HEAD
 
         $user->removeToReadPost($post);
 
@@ -340,6 +461,14 @@ class ApiUserController extends AbstractController
         $entityManager = $doctrine->getManager();
         $entityManager->persist($user);
         $entityManager->flush();
+=======
+        $user->removeToReadPost($post);
+
+            // save the modification of the entity
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+>>>>>>> 8159a14c7f6d189fbab8e26e024b6bedfd241415
 
         return $this->json(
             $user->getToReadPosts(),
@@ -351,11 +480,12 @@ class ApiUserController extends AbstractController
 
     /**
      * road to add a like on a given post from a given user
-     * @Route("/api/user/{id}/post/{post_id}/like", name="api_user_add_like", methods={"PUT"})
-     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     * @Route("/api/user/post/{id}/like", name="api_user_add_like", methods={"PUT"})
      */
     public function addLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
 
         if (!$post) {
             return $this->json([
@@ -380,6 +510,7 @@ class ApiUserController extends AbstractController
             // add the association in the DB
             $user->addLiked($post);
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
@@ -393,12 +524,13 @@ class ApiUserController extends AbstractController
     }
 
     /**
-     * road to add a like on a given post from a given user
-     * @Route("/api/user/{id}/post/{post_id}/like", name="api_user_remove_like", methods={"DELETE"})
-     * @ParamConverter("post", options={"mapping": {"post_id": "id"}})
+     * road to remove a like on a given post from a given user
+     * @Route("/api/user/post/{id}/like", name="api_user_remove_like", methods={"DELETE"})
      */
     public function removeLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
 
         if (!$post) {
             return $this->json([
@@ -421,6 +553,7 @@ class ApiUserController extends AbstractController
 
             $user->removeLiked($post);
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
@@ -431,5 +564,75 @@ class ApiUserController extends AbstractController
                 [],
             );
         }
+    }
+
+    /**
+     * road to create a user
+     * @Route("/api/user/new", name="api_user_new", methods={"POST"})
+     */
+    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, UserPasswordHasherInterface $userPasswordHasher)
+    {
+
+        $jsonContent = $request->getContent();
+
+        try 
+        {
+        // deserialize json into post entity
+            $user = $serializer->deserialize($jsonContent, User::class, 'json');
+        } 
+        catch (NotEncodableValueException $e) 
+        {
+            return $this->json(
+                ["error" => "JSON INVALIDE"],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        $user->setRoles(['ROLE_USER']);
+        $password = $user->getPassword();
+        $passwordHashed = $userPasswordHasher->hashPassword($user, $password);
+        $user->setPassword($passwordHashed);
+
+
+        $errors = $validatorInterface->validate($user);
+
+        if(count($errors) > 0)
+        {
+            return $this->json(
+                $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        // save the modification of the entity
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+
+        // we return to the json
+        return $this->json(
+            $user,
+            Response::HTTP_CREATED,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to get a user from an email given
+     * @Route("/api/user/get", name="api_user_get", methods={"GET"})
+     */
+    public function getItem()
+    {
+
+    /** @var \App\Entity\User $user */
+    $user = $this->getUser();
+
+    return $this->json(
+        $user,
+        200,
+        [],
+        ['groups' => 'get_post']
+    );
     }
 }

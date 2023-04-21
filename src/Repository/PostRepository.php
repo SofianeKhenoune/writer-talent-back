@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use DateInterval;
 use App\Entity\Post;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
 
 /**
  * @extends ServiceEntityRepository<Post>
@@ -92,7 +95,7 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all posts publicated
+     * Get all posts published
      */
     public function findAllPublicated()
     {
@@ -100,6 +103,29 @@ class PostRepository extends ServiceEntityRepository
         ->Where('p.status = 2');
 
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Get all post published less than a month ago
+     */
+    public function findMostRecent()
+    {
+        $now = new DateTimeImmutable();
+        $thirtyDaysAgo = $now->sub(new DateInterval("P30D"));
+
+        $qb = $this->createQueryBuilder('p');
+
+        $qb
+        ->add('where', $qb->expr()->between(
+            'p.publishedAt',
+            ':from',
+            ':to'
+            )
+        )
+        ->setParameters(array('from' => $thirtyDaysAgo, 'to' => $now));
+
+ 
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -122,8 +148,21 @@ class PostRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('p')
         ->Where('p.status = 2')
-        ->andWhere('p.category = :category')
-        ->setParameter('category', $category);
+        ->join('p.categories', 'c', 'WITH', 'c.id = :id')
+        ->setParameter('id', $category);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Get most liked posts (limit 4)
+     */
+    public function findMostLiked()
+    {
+        $query = $this->createQueryBuilder('p')
+        ->Where('p.status = 2')
+        ->orderBy('p.nbLikes', 'DESC')
+        ->setMaxResults(4);
 
         return $query->getQuery()->getResult();
     }

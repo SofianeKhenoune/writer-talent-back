@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use DateTime;
 use App\Entity\Post;
 use App\Repository\PostRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -9,10 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ApiPostController extends AbstractController
 {
@@ -55,14 +57,17 @@ class ApiPostController extends AbstractController
     /**
      * @Route("/api/post", name="api_post_create_item", methods={"POST"})
      */
-    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface)
+    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, SluggerInterface $SluggerInterface)
     {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
         // get the json
         $jsonContent = $request->getContent();
 
         try 
         {
-        // deserialize le json into post entity
+        // deserialize the json into post entity
         $post = $serializer->deserialize($jsonContent, Post::class, 'json');
         } 
         catch (NotEncodableValueException $e) 
@@ -72,6 +77,9 @@ class ApiPostController extends AbstractController
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
+
+        $post->setUser($user);
+        $post->setSlug($SluggerInterface->slug($post->getTitle())->lower());
 
         $errors = $validatorInterface->validate($post);
 
@@ -83,7 +91,7 @@ class ApiPostController extends AbstractController
         }
 
 
-        // save
+        // save the modification of the entity
         $entityManager = $doctrine->getManager();
         $entityManager->persist($post);
         $entityManager->flush();
@@ -103,6 +111,8 @@ class ApiPostController extends AbstractController
      */
     public function deleteItem(ManagerRegistry $doctrine, ?Post $post)
     {
+
+        $this->denyAccessUnlessGranted('POST_REMOVE', $post);
 
         if(!$post) 
         {
@@ -131,8 +141,10 @@ class ApiPostController extends AbstractController
      * road to get a post from a given id
      * @Route("/api/post/{id}", name="api_post_update_item", methods={"PUT"})
      */
-    public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface)
+    public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface, SluggerInterface $sluggerInterface)
     {
+        $this->denyAccessUnlessGranted('POST_UPDATE', $post);
+        
         if(!$post) 
         {
             return $this->json([
@@ -148,7 +160,7 @@ class ApiPostController extends AbstractController
 
             try 
             {
-            // deserialize le json into post entity
+            // deserialize the json into post entity
             $postModified = $serializer->deserialize($jsonContent, Post::class, 'json', ['object_to_populate' => $post]);
 
             } 
@@ -160,6 +172,8 @@ class ApiPostController extends AbstractController
                 );
             }
 
+            $post->setSlug($sluggerInterface->slug($post->getTitle())->lower());
+
             $errors = $validatorInterface->validate($postModified);
 
             if(count($errors) > 0)
@@ -169,6 +183,7 @@ class ApiPostController extends AbstractController
                 );
             }
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($postModified);
             $entityManager->flush();
@@ -190,10 +205,42 @@ class ApiPostController extends AbstractController
     {
         $randomPost = $postRepository->findOneRandomPost();
 
-
-
         return $this->json(
             $randomPost,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to get the four most liked posts
+     * @Route("/api/posts-most-liked", name="api_post_get_item_random", methods={"GET"})
+     */
+    public function getMostLiked(PostRepository $postRepository)
+    {
+        $mostLikedPost = $postRepository->findMostLiked();
+
+        return $this->json(
+            $mostLikedPost,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+
+
+    /**
+     * road to get the most recent publicated post (30days)
+     * @Route("/api/posts/recent", name="api_post_get_recent", methods={"GET"})
+     */
+    public function getMostRecent(PostRepository $postRepository)
+    {
+        $recentPosts = $postRepository->findMostRecent();
+
+        return $this->json(
+            $recentPosts,
             200,
             [],
             ['groups' => 'get_post']
@@ -203,9 +250,9 @@ class ApiPostController extends AbstractController
 
     /**
      * road to set a status from a given post to 2 (publicated)
-     * @Route("/api/post/{id}/publicated", name="api_post_update_status_publicated", methods={"PUT"})
+     * @Route("/api/post/{id}/published", name="api_post_update_status_publicated", methods={"PUT"})
      */
-    public function setStatutsToPublicated(ManagerRegistry $doctrine, ?Post $post)
+    public function setStatutToPublicated(ManagerRegistry $doctrine, ?Post $post)
     {
 
         if(!$post) 
@@ -220,7 +267,9 @@ class ApiPostController extends AbstractController
         {
             // update status
             $post->setStatus(2);
+            $post->setPublishedAt(new DateTime());
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
@@ -236,8 +285,9 @@ class ApiPostController extends AbstractController
      * road to set a status from a given post to 1 (awaiting for publication)
      * @Route("/api/post/{id}/awaiting", name="api_post_update_status_awaiting", methods={"PUT"})
      */
-    public function setStatutsToAwaiting(ManagerRegistry $doctrine, ?Post $post)
+    public function setStatutToAwaiting(ManagerRegistry $doctrine, ?Post $post)
     {
+        $this->denyAccessUnlessGranted('POST_SET_STATUS', $post);
 
         if(!$post) 
         {
@@ -252,6 +302,7 @@ class ApiPostController extends AbstractController
             // update status
             $post->setStatus(1);
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
@@ -267,7 +318,7 @@ class ApiPostController extends AbstractController
      * road to set a status from a given post to 0 (saved)
      * @Route("/api/post/{id}/saved", name="api_post_update_status_saved", methods={"PUT"})
      */
-    public function setStatutsToSaved(ManagerRegistry $doctrine, ?Post $post)
+    public function setStatutToSaved(ManagerRegistry $doctrine, ?Post $post)
     {
 
         if(!$post) 
@@ -283,6 +334,7 @@ class ApiPostController extends AbstractController
             // update status
             $post->setStatus(0);
 
+            // save the modification of the entity
             $entityManager = $doctrine->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
@@ -296,7 +348,7 @@ class ApiPostController extends AbstractController
 
     /**
      * road to get the number of like on a given post
-     * @Route("/api/post/{id}/like", name="api_post-like", methods={"GET"})
+     * @Route("/api/post/{id}/like", name="api_post_like", methods={"GET"})
      * @isGranted("ROLE_ADMIN", message="Vous devez être un administrateur")
      */
     public function getNbLike(?Post $post): Response
@@ -317,8 +369,4 @@ class ApiPostController extends AbstractController
             [],
         );
     }
-
-
-
-
 }
