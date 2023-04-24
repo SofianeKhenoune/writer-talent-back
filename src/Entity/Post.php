@@ -9,13 +9,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
  */
 class Post
 {
-    /**
+    /** 
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -26,12 +27,14 @@ class Post
     /**
      * @ORM\Column(type="string", length=128)
      * @Groups({"get_post"})
+     * @Assert\NotBlank
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
      * @Groups({"get_post"})
+     * @Assert\NotBlank
      */
     private $content;
 
@@ -62,6 +65,7 @@ class Post
     /**
      * @ORM\Column(type="integer")
      * @Groups({"get_post"})
+     * @Assert\NotBlank
      */
     private $status;
 
@@ -69,6 +73,7 @@ class Post
      * @ORM\ManyToOne(targetEntity=Genre::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_post"})
+     * @Assert\NotBlank
      * 
      */
     private $genre;
@@ -77,12 +82,14 @@ class Post
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_post"})
+     * @Assert\NotBlank
      */
     private $user;
 
     /**
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="posts")
      * @Groups({"get_post"})
+     * @Assert\NotBlank
      * 
      */
     private $categories;
