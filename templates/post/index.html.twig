@@ -1,23 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Post index{% endblock %}
+{% block title %}Liste des Écrits{% endblock %}
 
 {% block body %}
-    <h1>Post index</h1>
+    <h1>Liste des Écrits</h1>
+    <a class="btn btn-sm btn-primary mb-3" href="{{ path('app_post_new') }}">Ajouter un écrit</a>
+
+    {{ include('_flash_messages.html.twig')}}
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Title</th>
-                <th>Content</th>
-                <th>NbViews</th>
-                <th>NbLikes</th>
                 <th>PublishedAt</th>
-                <th>CreatedAt</th>
                 <th>Status</th>
-                <th>Slug</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -25,16 +23,11 @@
             <tr>
                 <td>{{ post.id }}</td>
                 <td>{{ post.title }}</td>
-                <td>{{ post.content }}</td>
-                <td>{{ post.nbViews }}</td>
-                <td>{{ post.nbLikes }}</td>
                 <td>{{ post.publishedAt ? post.publishedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ post.createdAt ? post.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ post.status }}</td>
-                <td>{{ post.slug }}</td>
                 <td>
-                    <a href="{{ path('app_post_show', {'id': post.id}) }}">show</a>
-                    <a href="{{ path('app_post_edit', {'id': post.id}) }}">edit</a>
+                    <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn bt-sm btn-primary">Afficher</a>
+                    <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn bt-sm btn-warning">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -45,5 +38,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_post_new') }}">Create new</a>
+
 {% endblock %}

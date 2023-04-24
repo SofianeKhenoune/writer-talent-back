@@ -142,6 +142,19 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get all posts publicated frm a given user
+     */
+    public function findAllPublicatedByUser($user)
+    {
+        $query = $this->createQueryBuilder('p')
+        ->Where('p.status = 2')
+        ->andWhere('p.user = :user')
+        ->setParameter('user', $user);
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
      * Get all posts publicated frm a given genre
      */
     public function findAllPublicatedByCategory($category)

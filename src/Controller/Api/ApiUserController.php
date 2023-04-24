@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -134,7 +135,7 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get all users with at least one publicated post
-     * @Route("/api/users/authors", name="api_post_get_authors", methods={"GET"})
+     * @Route("/api/users/authors", name="api_user_get_authors", methods={"GET"})
      */
     public function getAuthors(PostRepository $postRepository)
     {
@@ -155,7 +156,7 @@ class ApiUserController extends AbstractController
 
 
         // foreach ($allPulicatedPosts as $postPublicated) {
-
+            
         //         $authorList[] = [
         //             'user' => $postPublicated->getUser(),
         //             'nbPostPublicated' => $postPublicated->getUser()->getPosts()->count()
@@ -171,6 +172,32 @@ class ApiUserController extends AbstractController
             ['groups' => 'get_post']
         );
     }
+
+    /**
+     * road to get the number of published post from a given user
+     * @Route("/api/user/{id}/nb-published-posts", name="api_user_get_nb_publication", methods={"GET"})
+     */
+    public function getNbPublication(?User $user, PostRepository $postRepository)
+    {
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        $postPublished = $postRepository->findAllPublicatedByUser($user);
+
+        $nbPublications = count($postPublished);
+
+        return $this->json(
+            $nbPublications,
+            200,
+            [],
+        );
+    }
+
 
     /**
      * road to get all favorite posts from a given user

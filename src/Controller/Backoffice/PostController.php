@@ -5,10 +5,12 @@ namespace App\Controller\Backoffice;;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/back/post")
@@ -28,14 +30,24 @@ class PostController extends AbstractController
     /**
      * @Route("/new", name="app_post_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, PostRepository $postRepository): Response
+    public function new(Request $request, PostRepository $postRepository, SluggerInterface $SluggerInterface): Response
     {
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // when the form is submitted and valid, set of the slug and published date 
+            
+            $post->setSlug($SluggerInterface->slug($post->getTitle())->lower());
+
+            if($post->getStatus()== 2)
+            {
+                $post->setPublishedAt(new DateTime());
+            }
+
             $postRepository->add($post, true);
+            $this->addFlash('success', "Un nouvel écrit a été ajouté avec succés");
 
             return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -59,12 +71,19 @@ class PostController extends AbstractController
     /**
      * @Route("/{id}/edit", name="app_post_edit", methods={"GET", "POST"})
      */
-    public function edit(Request $request, Post $post, PostRepository $postRepository): Response
+    public function edit(Request $request, Post $post, PostRepository $postRepository, SluggerInterface $SluggerInterface): Response
     {
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $post->setSlug($SluggerInterface->slug($post->getTitle())->lower());
+
+            if($post->getStatus()== 2)
+            {
+                $post->setPublishedAt(new DateTime());
+            }
+
             $postRepository->add($post, true);
 
             return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
