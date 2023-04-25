@@ -6,6 +6,8 @@
     <h1>Liste des avis</h1>
     <a class="btn btn-sm btn-primary mb-3" href="{{ path('app_review_new') }}">Ajouter un avis</a>
 
+    {{ include('_sort_reviews_form.html.twig')}}
+
     <table class="table">
         <thead>
             <tr>

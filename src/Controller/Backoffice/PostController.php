@@ -5,6 +5,7 @@ namespace App\Controller\Backoffice;;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use App\Service\PostSort;
 use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,23 +18,30 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class PostController extends AbstractController
 {
+
     /**
      * @Route("/", name="app_post_index", methods={"GET"})
      */
-    public function index(PostRepository $postRepository): Response
+    public function index(PostSort $postSort ): Response
     {
+        // call the service to get all posts if there is a sort given
+        $posts = $postSort->sort();
+
         return $this->render('post/index.html.twig', [
-            'posts' => $postRepository->findAll(),
+            'posts' => $posts,
         ]);
     }
 
     /**
      * @Route("/awaiting", name="app_post_awaiting", methods={"GET"})
      */
-    public function awaitingList(PostRepository $postRepository): Response
+    public function awaitingList(PostSort $postSort): Response
     {
+        $posts = $postSort->sort();
+        
+
         return $this->render('post/index_awaiting.html.twig', [
-            'posts' => $postRepository->findAwaitingPosts()
+            'posts' => $posts,
         ]);
     }
 

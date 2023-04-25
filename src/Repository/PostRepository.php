@@ -191,6 +191,17 @@ class PostRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function findWithSort(?string $tri)
+    {
+        // Creating QueryBuilder
+        $qb = $this->createQueryBuilder('p')
+                ->orderBy('p.'.$tri, 'ASC');
+            
+
+        // on retourne l'exécution de la requête
+        return $qb->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Post[] Returns an array of Post objects
 //     */

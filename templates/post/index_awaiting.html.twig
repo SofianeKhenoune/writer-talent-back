@@ -5,6 +5,8 @@
 {% block body %}
     <h1>Liste des écrits en attente de publication</h1>
 
+    {{ include('_sort_posts_form.html.twig')}}
+
     <table class="table">
         <thead>
             <tr>
@@ -26,10 +28,10 @@
                     <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn bt-sm btn-primary">Afficher</a>
                     <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn bt-sm btn-warning">Modifier</a>
                     {# <a method="put" href="{{ path('api_post_update_status_publicated', {'id': post.id}) }}" class="btn bt-sm btn-success">Publier</a> #}
-                    {# <form action="{{ path('api_post_update_status_publicated', {'id': post.id}) }}" method="POST">
+                    <form action="{{ path('api_post_update_status_publicated', {'id': post.id}) }}" method="POST">
                         <button>link</button>
                         <input type="hidden" name="_method" value="PUT" />
-                    </form> #}
+                    </form>
                 </td>
             </tr>
         {% else %}

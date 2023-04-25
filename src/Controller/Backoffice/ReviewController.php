@@ -4,11 +4,12 @@ namespace App\Controller\Backoffice;
 
 use App\Entity\Review;
 use App\Form\ReviewType;
+use App\Service\PostSort;
 use App\Repository\ReviewRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("back/review")
@@ -18,10 +19,13 @@ class ReviewController extends AbstractController
     /**
      * @Route("/", name="app_review_index", methods={"GET"})
      */
-    public function index(ReviewRepository $reviewRepository): Response
+    public function index(PostSort $postSort): Response
     {
+        // call the service to get all reviews if there is a sort given
+        $reviews = $postSort->sort();
+
         return $this->render('review/index.html.twig', [
-            'reviews' => $reviewRepository->findAll(),
+            'reviews' => $reviews,
         ]);
     }
 
