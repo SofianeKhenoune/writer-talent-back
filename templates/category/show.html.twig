@@ -3,7 +3,7 @@
 {% block title %}Category{% endblock %}
 
 {% block body %}
-    <h1>Category</h1>
+    <h1>Univers {{ category.name }}</h1>
 
     <table class="table">
         <tbody>
@@ -18,9 +18,9 @@
         </tbody>
     </table>
 
-    <a class="btn btn-sm btn-primary mt-3 mb-3" href="{{ path('app_category_index') }}">Retour à la liste</a>
+    <a class="btn btn-sm btn-primary mt-3 mb-3 bi bi-skip-backward" href="{{ path('app_category_index') }}"> Retour</a>
 
-    <a class="btn btn-sm btn-primary mt-3 mb-3" href="{{ path('app_category_edit', {'id': category.id}) }}">Modifier</a>
+    <a class="btn btn-sm btn-warning mt-3 mb-3 bi bi-pencil-square" href="{{ path('app_category_edit', {'id': category.id}) }}"> Modifier</a>
 
     {{ include('category/_delete_form.html.twig') }}
 {% endblock %}

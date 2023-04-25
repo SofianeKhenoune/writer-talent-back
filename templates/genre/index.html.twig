@@ -8,8 +8,6 @@
 
     {{ include('_flash_messages.html.twig')}}
 
-
-
     <table class="table justify-content-between">
         <thead>
             <tr>
@@ -24,8 +22,8 @@
                 <td>{{ genre.id }}</td>
                 <td class="text-truncate">{{ genre.name }}</td>
                 <td>
-                    <a href="{{ path('app_genre_show', {'id': genre.id}) }}" class="btn bt-sm btn-primary">Afficher</a>
-                    <a href="{{ path('app_genre_edit', {'id': genre.id}) }}" class="btn bt-sm btn-warning">Modifier</a>
+                    <a href="{{ path('app_genre_show', {'id': genre.id}) }}" class="btn bt-sm btn-primary bi bi-box-arrow-right"></a>
+                    <a href="{{ path('app_genre_edit', {'id': genre.id}) }}" class="btn bt-sm btn-warning bi bi-pencil-square"></a>
                 </td>
             </tr>
         {% endfor %}

@@ -37,4 +37,21 @@ class PostSort {
 
         return $posts;
     }
+
+    public function sortAwaitingPosts()
+    {
+        if(!$this->request->query->get('tri') || !in_array($this->request->query->get('tri'), $this->sort))
+        {
+            $posts = $this->postRepository->findAwaitingPosts();
+        }
+
+        else 
+        {
+            $tri = $this->request->query->get('tri');
+
+            $posts = $this->postRepository->findWithSort($tri, 1);
+        }
+
+        return $posts;
+    }
 }

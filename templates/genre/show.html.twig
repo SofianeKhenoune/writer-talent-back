@@ -3,7 +3,7 @@
 {% block title %}Genre{% endblock %}
 
 {% block body %}
-    <h1>Genre</h1>
+    <h1>Genre {{ genre.name }}</h1>
 
     <table class="table">
         <tbody>
@@ -18,9 +18,9 @@
         </tbody>
     </table>
 
-    <a class="btn btn-sm btn-primary mt-3 mb-3" href="{{ path('app_genre_index') }}">Retour à la liste</a>
+    <a class="btn btn-sm btn-primary mt-3 mb-3 bi bi-skip-backward" href="{{ path('app_genre_index') }}"> Retour</a>
 
-    <a class="btn btn-sm btn-primary mt-3 mb-3" href="{{ path('app_genre_edit', {'id': genre.id}) }}">Modifier</a>
+    <a class="btn btn-sm btn-warning mt-3 mb-3 bi bi-pencil-square" href="{{ path('app_genre_edit', {'id': genre.id}) }}"> Modifier</a>
 
     {{ include('genre/_delete_form.html.twig') }}
 {% endblock %}

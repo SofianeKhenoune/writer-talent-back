@@ -27,8 +27,8 @@
                 <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
                 <td>{{ user.username }}</td>
                 <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn bt-sm btn-primary">Afficher</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn bt-sm btn-warning">Modifier</a>
+                    <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn bt-sm btn-primary bi bi-box-arrow-right"></a>
+                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn bt-sm btn-warning bi bi-pencil-square"></a>
                 </td>
             </tr>
         {% endfor %}

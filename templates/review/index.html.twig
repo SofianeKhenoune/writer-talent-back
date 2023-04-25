@@ -26,8 +26,8 @@
                 <td>{{ review.createdAt ? review.createdAt|date('Y-m-d H:i') : '' }}</td>
                 <td>{{ review.user.username }}</td>
                 <td>
-                    <a class="btn bt-sm btn-primary" href="{{ path('app_review_show', {'id': review.id}) }}">Afficher</a>
-                    <a  class="btn bt-sm btn-warning" href="{{ path('app_review_edit', {'id': review.id}) }}">Modifier</a>
+                    <a class="btn bt-sm btn-primary bi bi-box-arrow-right" href="{{ path('app_review_show', {'id': review.id}) }}"></a>
+                    <a class="btn bt-sm btn-warning bi bi-pencil-square" href="{{ path('app_review_edit', {'id': review.id}) }}"></a>
                 </td>
             </tr>
         {% else %}

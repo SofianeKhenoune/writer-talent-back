@@ -1,7 +1,7 @@
 <div class="mb-3 d-flex align-items-center justify-content-end">
-    <span class="d-inline-block mr-1">Trier par</span>
-    <form action="" method="get">
-        <select name="tri" class="custom-select w-auto border-0">
+    <span class="d-inline-block">Trier par</span>
+    <form action="" method="get" class="d-inline">
+        <select name="tri" class="form-select w-auto border-0 d-inline-block mt-1">
             <option value="notSorted" {% if app.request.query.get('tri') is not defined %} selected {% endif %}>Défaut</option>
             <option value="user" {% if app.request.query.get('tri') == 'user' %} selected {% endif %}>Utilisateur</option>
             <option value="post" {% if app.request.query.get('tri') == 'post' %} selected {% endif %}>Écrit</option>

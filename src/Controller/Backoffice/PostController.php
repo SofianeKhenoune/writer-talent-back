@@ -2,11 +2,12 @@
 
 namespace App\Controller\Backoffice;;
 
+use DateTime;
 use App\Entity\Post;
 use App\Form\PostType;
-use App\Repository\PostRepository;
 use App\Service\PostSort;
-use DateTime;
+use App\Repository\PostRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,8 +38,7 @@ class PostController extends AbstractController
      */
     public function awaitingList(PostSort $postSort): Response
     {
-        $posts = $postSort->sort();
-        
+        $posts = $postSort->sortAwaitingPosts();
 
         return $this->render('post/index_awaiting.html.twig', [
             'posts' => $posts,
@@ -124,4 +124,29 @@ class PostController extends AbstractController
 
         return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    /**
+     * @Route("/{id}/publish", name="app_post_publish", methods={"PUT"})
+     */
+    public function publish(ManagerRegistry $doctrine, ?Post $post): Response
+    {
+
+        if(!$post) 
+        {
+            throw $this->createNotFoundException("L'écrit n'existe pas");
+        }
+
+        $post->setStatus(2);
+        $post->setPublishedAt(new DateTime());
+
+        // save the modification of the entity
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($post);
+        $entityManager->flush();
+        
+
+        return $this->redirectToRoute('app_post_awaiting', [], Response::HTTP_SEE_OTHER);
+    }
+
+
 }
