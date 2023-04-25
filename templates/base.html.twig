@@ -30,9 +30,20 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ path('app_post_index') }}">Accueil</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_post_index') }}">Écrits</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Écrits
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_post_index') }}">Tous les écrits</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ path('app_post_awaiting') }}">Écrits en attente de publication</a>
+                            </li>
+                        </ul>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_category_index') }}">Univers</a>
                     </li>
@@ -42,6 +53,10 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_user_index') }}">Utilisateurs</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_review_index') }}">Avis</a>
+                    </li>
+                    
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>

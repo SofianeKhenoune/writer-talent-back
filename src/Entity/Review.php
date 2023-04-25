@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ReviewRepository;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ReviewRepository::class)
@@ -23,6 +24,7 @@ class Review
     /**
      * @ORM\Column(type="text")
      * @Groups({"get_post"})
+     * @Assert\NotBlank
      */
     private $content;
 
@@ -36,12 +38,14 @@ class Review
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reviews")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"get_post"})
+     * @Assert\NotBlank
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="reviews")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank
      */
     private $post;
 

@@ -82,6 +82,17 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get all posts awaiting for validation
+     */
+    public function findAwaitingPosts()
+    {
+        $query = $this->createQueryBuilder('p')
+        ->where('p.status = 1');
+
+        return $query->getQuery()->getResult();
+    }
+
+    /**
      * Get all posts saved from a given user
      */
     public function findSavedPostFromUser($user)

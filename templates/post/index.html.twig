@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des Écrits{% endblock %}
+{% block title %}Liste des écrits{% endblock %}
 
 {% block body %}
-    <h1>Liste des Écrits</h1>
+    <h1>Liste des écrits</h1>
     <a class="btn btn-sm btn-primary mb-3" href="{{ path('app_post_new') }}">Ajouter un écrit</a>
 
     {{ include('_flash_messages.html.twig')}}
@@ -11,11 +11,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>PublishedAt</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th class="col-1">Id</th>
+                <th class="col-4">Titre</th>
+                <th class="col-1">Auteur</th>
+                <th class="col-2">Date de publication</th>
+                <th class="col-2">Statut</th>
+                <th class="col-2">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -23,8 +24,14 @@
             <tr>
                 <td>{{ post.id }}</td>
                 <td>{{ post.title }}</td>
-                <td>{{ post.publishedAt ? post.publishedAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ post.status }}</td>
+                <td>{{ post.user.username }}</td>
+                <td>{{ post.publishedAt ? post.publishedAt|date('Y-m-d H:i') : '' }}</td>
+                <td>
+                    {% if post.status == 0 %}Sauvegardé
+                    {% elseif post.status == 1 %}En attente de publication
+                    {% elseif post.status == 2 %}Publié
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn bt-sm btn-primary">Afficher</a>
                     <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn bt-sm btn-warning">Modifier</a>

@@ -28,6 +28,16 @@ class PostController extends AbstractController
     }
 
     /**
+     * @Route("/awaiting", name="app_post_awaiting", methods={"GET"})
+     */
+    public function awaitingList(PostRepository $postRepository): Response
+    {
+        return $this->render('post/index_awaiting.html.twig', [
+            'posts' => $postRepository->findAwaitingPosts()
+        ]);
+    }
+
+    /**
      * @Route("/new", name="app_post_new", methods={"GET", "POST"})
      */
     public function new(Request $request, PostRepository $postRepository, SluggerInterface $SluggerInterface): Response

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des avis{% endblock %}
+
+{% block body %}
+    <h1>Liste des avis</h1>
+    <a class="btn btn-sm btn-primary mb-3" href="{{ path('app_review_new') }}">Ajouter un avis</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-1">Id</th>
+                <th class="col-6">Contenu</th>
+                <th class="col-2">Date de publication</th>
+                <th class="col-1">Auteur</th>
+                <th class="col-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for review in reviews %}
+            <tr>
+                <td>{{ review.id }}</td>
+                <td>{{ review.content| u.truncate(75, '...') }}</td>
+                <td>{{ review.createdAt ? review.createdAt|date('Y-m-d H:i') : '' }}</td>
+                <td>{{ review.user.username }}</td>
+                <td>
+                    <a class="btn bt-sm btn-primary" href="{{ path('app_review_show', {'id': review.id}) }}">Afficher</a>
+                    <a  class="btn bt-sm btn-warning" href="{{ path('app_review_edit', {'id': review.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

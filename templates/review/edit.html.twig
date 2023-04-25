@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un avis{% endblock %}
+
+{% block body %}
+    <h1>Modifier un avis</h1>
+
+    {{ include('review/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+    <a class="btn btn-sm btn-primary mt-3 mb-3" href="{{ path('app_review_index') }}">Retour à la liste</a>
+
+    {{ include('review/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des écrits en attente de publication{% endblock %}
+
+{% block body %}
+    <h1>Liste des écrits en attente de publication</h1>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Auteur</th>
+                <th>Date de création</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for post in posts %}
+            <tr>
+                <td>{{ post.id }}</td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.user.username }}</td>
+                <td>{{ post.createdAt ? post.createdAt|date('Y-m-d H:i') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_post_show', {'id': post.id}) }}" class="btn bt-sm btn-primary">Afficher</a>
+                    <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn bt-sm btn-warning">Modifier</a>
+                    {# <a method="put" href="{{ path('api_post_update_status_publicated', {'id': post.id}) }}" class="btn bt-sm btn-success">Publier</a> #}
+                    {# <form action="{{ path('api_post_update_status_publicated', {'id': post.id}) }}" method="POST">
+                        <button>link</button>
+                        <input type="hidden" name="_method" value="PUT" />
+                    </form> #}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">Il n'y a pas d'écrit en attente</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
