@@ -45,12 +45,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      * @Assert\NotBlank
      * @Assert\Regex("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{10,}$/")
-     * 
-     * Formé d'un minimum de 8 caractères. Ajustez-le en modifiant {8,}
-     * Au moins une lettre majuscule. Vous pouvez supprimer cette condition en supprimant (?=.* ?[A-Z])
-     * Au moins une lettre minuscule. Vous pouvez supprimer cette condition en supprimant (?=.* ?[a-z])
-     * Au moins un chiffre. Vous pouvez supprimer cette condition en supprimant (?=.* ?[0-9])
-     * Au moins un caractère spécial, Vous pouvez supprimer cette condition en supprimant (?=.* ?[#?!@$%^&*-])
      */
     private $password;
 
