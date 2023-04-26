@@ -218,11 +218,11 @@ class ApiPostController extends AbstractController
 
     /**
      * road to get the four most liked posts
-     * @Route("/api/posts-most-liked", name="api_post_get_item_random", methods={"GET"})
+     * @Route("/api/posts-most-liked", name="api_post_get_most_liked", methods={"GET"})
      */
     public function getMostLiked(PostRepository $postRepository)
     {
-        $mostLikedPost = $postRepository->findMostLiked();
+        $mostLikedPost = $postRepository->findBy(['status' => 2], ['nbLikes' => 'DESC']);
 
         return $this->json(
             $mostLikedPost,
@@ -238,7 +238,7 @@ class ApiPostController extends AbstractController
      */
     public function getMostRecent(PostRepository $postRepository)
     {
-        $recentPosts = $postRepository->findMostRecent();
+        $recentPosts = $postRepository->findBy(['status' => 2], ['publishedAt' => 'DESC']);
 
         return $this->json(
             $recentPosts,

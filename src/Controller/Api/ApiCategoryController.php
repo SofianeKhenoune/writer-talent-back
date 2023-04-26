@@ -29,12 +29,11 @@ class ApiCategoryController extends AbstractController
 
     /**
      * road to get all posts from a given categories
-     * @Route("/api/category/{id}/posts", name="api_postsByCategory_get", methods={"GET"})
+     * @Route("/api/category/{id}/posts", name="api_posts_by_category_get", methods={"GET"})
      */
-    public function getPosts(Category $category, PostRepository $postRepository)
+    public function getPosts(Category $category, PostRepository $postRepository, CategoryRepository $categoryRepository)
     {
         $posts = $postRepository->findAllPublicatedByCategory($category);
-
 
         return $this->json(
             $posts,

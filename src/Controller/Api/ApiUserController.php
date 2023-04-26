@@ -63,7 +63,7 @@ class ApiUserController extends AbstractController
             ]);
         }
 
-        $postList = $postRepository->findPublicatedPostFromUser($user);
+        $postList = $postRepository->findBy(['status' => 2, 'user' => $user]);
 
         return $this->json(
             $postList,
@@ -92,7 +92,7 @@ class ApiUserController extends AbstractController
             ]);
         }
 
-        $postList = $postRepository->findAwaitingPostFromUser($user);
+        $postList = $postRepository->findBy(['status' => 1, 'user' => $user]);
 
         return $this->json(
             $postList,
@@ -122,7 +122,7 @@ class ApiUserController extends AbstractController
             ]);
         }
 
-        $postList = $postRepository->findSavedPostFromUser($user);
+        $postList = $postRepository->findBy(['status' => 0, 'user' => $user]);
 
         return $this->json(
             $postList,
@@ -139,7 +139,7 @@ class ApiUserController extends AbstractController
     public function getAuthors(PostRepository $postRepository)
     {
         // get all publicated post
-        $allPulicatedPosts = $postRepository->findAllPublicated();
+        $allPulicatedPosts = $postRepository->findBy(['status' => 2]);
 
         // creation of an empty table authorList
         $authorList = [];
@@ -152,17 +152,6 @@ class ApiUserController extends AbstractController
             $authorList[] = $postPublicated->getUser();
         }
         }
-
-
-        // foreach ($allPulicatedPosts as $postPublicated) {
-            
-        //         $authorList[] = [
-        //             'user' => $postPublicated->getUser(),
-        //             'nbPostPublicated' => $postPublicated->getUser()->getPosts()->count()
-        //         ];
-
-        // }
-
 
         return $this->json(
             $authorList,
@@ -186,8 +175,7 @@ class ApiUserController extends AbstractController
             ]);
         }
 
-        $postPublished = $postRepository->findAllPublicatedByUser($user);
-
+        $postPublished = $postRepository->findBy(['status' => 2, 'user' => $user]);
         $nbPublications = count($postPublished);
 
         return $this->json(
@@ -549,11 +537,12 @@ class ApiUserController extends AbstractController
             );
         }
 
+        // set role user and hash password given
+
         $user->setRoles(['ROLE_USER']);
         $password = $user->getPassword();
         $passwordHashed = $userPasswordHasher->hashPassword($user, $password);
         $user->setPassword($passwordHashed);
-
 
         $errors = $validatorInterface->validate($user);
 
@@ -569,8 +558,6 @@ class ApiUserController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-
-        // we return to the json
         return $this->json(
             $user,
             Response::HTTP_CREATED,
@@ -581,11 +568,11 @@ class ApiUserController extends AbstractController
 
     /**
      * road to get a user from an email given
+     * use by front to get information on the user connected (after log in)
      * @Route("/api/user/get", name="api_user_get", methods={"GET"})
      */
     public function getItem()
     {
-
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 

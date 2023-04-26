@@ -24,7 +24,6 @@ class ApiReviewController extends AbstractController
      */
     public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, ?Post $post)
     {
-
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
 
@@ -93,17 +92,14 @@ class ApiReviewController extends AbstractController
             ]);
         }
 
-        else
-        {
-            $reviewsListOnPost = $reviewRepository->findByPost($post);
+        $reviewsListOnPost = $reviewRepository->findByPost($post);
 
-            return $this->json(
-                $reviewsListOnPost,
-                200,
-                [],
-                ['groups' => 'get_post']
-            );
-        }
+        return $this->json(
+            $reviewsListOnPost,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
     }
 
     /**
@@ -123,16 +119,16 @@ class ApiReviewController extends AbstractController
             ]);
         }
 
-            // save the modification of the entity
-            $entityManager = $doctrine->getManager();
-            $entityManager->remove($review);
-            $entityManager->flush();
+        // save the modification of the entity
+        $entityManager = $doctrine->getManager();
+        $entityManager->remove($review);
+        $entityManager->flush();
 
 
-            return $this->json(
-                [],
-                204,
-            );
+        return $this->json(
+            [],
+            204,
+        );
 
     }
 

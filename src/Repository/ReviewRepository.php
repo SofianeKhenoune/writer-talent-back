@@ -39,28 +39,18 @@ class ReviewRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Review[] Returns an array of Review objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Get posts with sorts given
+     * method used in backoffice controller
+     * @param string $tri
+     */
+    public function findWithSort(?string $tri)
+    {
+        // Creating QueryBuilder
+        $qb = $this->createQueryBuilder('r')
+        ->orderBy('r.'.$tri, 'ASC');
 
-//    public function findOneBySomeField($value): ?Review
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+ 
+        return $qb->getQuery()->getResult();
+    }
 }

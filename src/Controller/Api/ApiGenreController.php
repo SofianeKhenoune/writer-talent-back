@@ -30,11 +30,11 @@ class ApiGenreController extends AbstractController
 
     /**
      * road to get all posts from a given genre
-     * @Route("/api/genre/{id}/posts", name="api_postsByGenre_get", methods={"GET"})
+     * @Route("/api/genre/{id}/posts", name="api_posts_by_genre_get", methods={"GET"})
      */
     public function getPosts(Genre $genre, PostRepository $postRepository)
     {
-        $posts = $postRepository->findAllPublicatedByGenre($genre);
+        $posts = $postRepository->findBy(['status' => 2, 'genre' => $genre]);
 
 
         return $this->json(

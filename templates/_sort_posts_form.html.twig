@@ -3,7 +3,7 @@
     <form action="" method="get" class="d-inline">
         <select name="tri" class="form-select w-auto border-0 d-inline-block mt-1">
             <option value="notSorted" {% if app.request.query.get('tri') is not defined %} selected {% endif %}>Défaut</option>
-            <option value="user" {% if app.request.query.get('tri') == 'user' %} selected {% endif %}>Utilisateur</option>
+            <option value="user" {% if app.request.query.get('tri') == 'user' %} selected {% endif %}>Auteur</option>
             <option value="title" {% if app.request.query.get('tri') == 'title' %} selected {% endif %}>Titre</option>
             <option value="createdAt" {% if app.request.query.get('tri') == 'createdAt' %} selected {% endif %}>Date de création</option>
         </select>

@@ -26,7 +26,7 @@ class PostController extends AbstractController
     public function index(PostSort $postSort ): Response
     {
         // call the service to get all posts if there is a sort given
-        $posts = $postSort->sort();
+        $posts = $postSort->sortAllPosts();
 
         return $this->render('post/index.html.twig', [
             'posts' => $posts,
