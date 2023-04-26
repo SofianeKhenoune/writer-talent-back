@@ -69,7 +69,7 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all posts awaiting of publication from a given user
+     * Get all posts awaiting for publication from a given user
      */
     public function findAwaitingPostFromUser($user)
     {

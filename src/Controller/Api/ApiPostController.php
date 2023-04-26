@@ -232,8 +232,6 @@ class ApiPostController extends AbstractController
         );
     }
 
-
-
     /**
      * road to get the most recent publicated post (30days)
      * @Route("/api/posts/recent", name="api_post_get_recent", methods={"GET"})

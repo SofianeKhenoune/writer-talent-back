@@ -34,8 +34,7 @@ class ApiUserController extends AbstractController
                 response::HTTP_NOT_FOUND
             ]);
         }
-
-        $postList = $postRepository->findPublicatedPostFromUser($user);
+        $postList = $postRepository->findBy(['status' => 2, 'user' => $user]);
 
         return $this->json(
             $postList,
@@ -139,20 +138,20 @@ class ApiUserController extends AbstractController
      */
     public function getAuthors(PostRepository $postRepository)
     {
-    // get all publicated post
-    $allPulicatedPosts = $postRepository->findAllPublicated();
+        // get all publicated post
+        $allPulicatedPosts = $postRepository->findAllPublicated();
 
-    // creation of an empty table authorList
-    $authorList = [];
+        // creation of an empty table authorList
+        $authorList = [];
 
-    // boucle on all publicated post to get their user
-    foreach ($allPulicatedPosts as $postPublicated) {
+        // boucle on all publicated post to get their user
+        foreach ($allPulicatedPosts as $postPublicated) {
         // if the user does not already belong to the authorlist then push him in the author list
         if(!in_array($postPublicated->getUser(), $authorList))
         {
             $authorList[] = $postPublicated->getUser();
         }
-    }
+        }
 
 
         // foreach ($allPulicatedPosts as $postPublicated) {
@@ -587,14 +586,14 @@ class ApiUserController extends AbstractController
     public function getItem()
     {
 
-    /** @var \App\Entity\User $user */
-    $user = $this->getUser();
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
 
-    return $this->json(
-        $user,
-        200,
-        [],
-        ['groups' => 'get_post']
-    );
+        return $this->json(
+            $user,
+            200,
+            [],
+            ['groups' => 'get_post']
+        );
     }
 }
