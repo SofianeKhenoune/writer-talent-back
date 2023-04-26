@@ -56,7 +56,7 @@ class PostRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all posts publicated of a given genre
+     * Get all posts publicated of a given category
      * ManyToMany relation prevent using findBy, need to make a custom request with juncture
      * @param \App\Entity\Category $category
      */
@@ -75,6 +75,7 @@ class PostRepository extends ServiceEntityRepository
      * method used in backoffice controller
      * @param string $tri
      * @param int $status
+     * @deprecated use findBy instead
      */
     public function findWithSort(?string $tri, int $status= null)
     {

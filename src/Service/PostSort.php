@@ -36,7 +36,7 @@ class PostSort {
         {
             $tri = $this->request->query->get('tri');
             // return all posts sorted (by default status = null)
-            $posts = $this->postRepository->findWithSort($tri);
+            $posts = $this->postRepository->findBy([], [$tri => 'ASC']);
         }
 
         return $posts;
@@ -57,7 +57,7 @@ class PostSort {
         {
             $tri = $this->request->query->get('tri');
             // return all posts sorted with status = 1 
-            $posts = $this->postRepository->findWithSort($tri, 1);
+            $posts = $this->postRepository->findBy(['status' => 1 ], [$tri => 'ASC']);
         }
 
         return $posts;

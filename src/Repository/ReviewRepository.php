@@ -43,6 +43,7 @@ class ReviewRepository extends ServiceEntityRepository
      * Get posts with sorts given
      * method used in backoffice controller
      * @param string $tri
+     * @deprecated use findBy instead
      */
     public function findWithSort(?string $tri)
     {

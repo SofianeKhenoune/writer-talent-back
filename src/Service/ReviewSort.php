@@ -35,7 +35,7 @@ class ReviewSort {
         {
             $tri = $this->request->query->get('tri');
             // return all reviews sorted
-            $reviews = $this->reviewRepository->findWithSort($tri);
+            $reviews = $this->reviewRepository->findBy([], [$tri => 'ASC']);
         }
 
         return $reviews;
