@@ -78,15 +78,14 @@ class PostRepository extends ServiceEntityRepository
      */
     public function findWithSort(?string $tri, int $status= null)
     {
-        // Creating QueryBuilder
-        $qb = $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
         ->orderBy('p.'.$tri, 'ASC');
 
             if ($status !== null) {
-                $qb->where('p.status = :status')
+                $query->where('p.status = :status')
                 ->setParameter('status', $status);
             }
  
-        return $qb->getQuery()->getResult();
+        return $query->getQuery()->getResult();
     }
 }
