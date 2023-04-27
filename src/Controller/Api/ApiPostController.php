@@ -222,7 +222,7 @@ class ApiPostController extends AbstractController
      */
     public function getMostLiked(PostRepository $postRepository)
     {
-        $mostLikedPost = $postRepository->findBy(['status' => 2], ['nbLikes' => 'DESC']);
+        $mostLikedPost = $postRepository->findBy(['status' => 2], ['nbLikes' => 'DESC'], 4);
 
         return $this->json(
             $mostLikedPost,
