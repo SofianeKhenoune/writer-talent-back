@@ -238,7 +238,7 @@ class ApiPostController extends AbstractController
      */
     public function getMostRecent(PostRepository $postRepository)
     {
-        $recentPosts = $postRepository->findBy(['status' => 2], ['publishedAt' => 'DESC']);
+        $recentPosts = $postRepository->findBy(['status' => 2], ['publishedAt' => 'DESC'] , 4);
 
         return $this->json(
             $recentPosts,
