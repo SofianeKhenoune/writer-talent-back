@@ -14,6 +14,7 @@ class PostSort {
     private $request;
     private $postRepository;
 
+
     public function __construct(PostRepository $postRepository, RequestStack $requestStack )
     {
         $this->postRepository = $postRepository;
@@ -34,9 +35,16 @@ class PostSort {
 
         else 
         {
+            $orderBy = 'ASC';
             $tri = $this->request->query->get('tri');
+
+
+            if($tri == 'createdAt') {
+                $orderBy = 'DESC';
+            }   
             // return all posts sorted (by default status = null)
-            $posts = $this->postRepository->findBy([], [$tri => 'ASC']);
+
+            $posts = $this->postRepository->findBy([], [$tri => $orderBy]);
         }
 
         return $posts;
@@ -55,9 +63,14 @@ class PostSort {
 
         else 
         {
+            $orderBy = 'ASC';
             $tri = $this->request->query->get('tri');
+
+            if($tri == 'createdAt') {
+                $orderBy = 'DESC';
+            }  
             // return all posts sorted with status = 1 
-            $posts = $this->postRepository->findBy(['status' => 1 ], [$tri => 'ASC']);
+            $posts = $this->postRepository->findBy(['status' => 1 ], [$tri => $orderBy]);
         }
 
         return $posts;

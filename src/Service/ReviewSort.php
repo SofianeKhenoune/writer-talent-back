@@ -34,8 +34,13 @@ class ReviewSort {
         else 
         {
             $tri = $this->request->query->get('tri');
+            $orderBy = 'ASC';
+
+            if($tri == 'createdAt') {
+                $orderBy = 'DESC';
+            } 
             // return all reviews sorted
-            $reviews = $this->reviewRepository->findBy([], [$tri => 'ASC']);
+            $reviews = $this->reviewRepository->findBy([], [$tri => $orderBy]);
         }
 
         return $reviews;
