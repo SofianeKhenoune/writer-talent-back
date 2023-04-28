@@ -7,6 +7,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -47,13 +49,25 @@ class UserType extends AbstractType
                     ],
                     'help' => 'Minimum 10 caractères contenant un chiffre, un caractère spécial, une minuscule et une majuscule.',
                 ]);
+
+                    // 'empty_data' => '',
+                    // 'constraints' => [
+                    //     new NotBlank(),
+                    //     new Regex('/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{10,}$/',
+                    //     'Le mot de passe ne respecte pas les conditions'
+                    //     )
+                //     ],
+                // ]);
+
                 }
+
 
                 else
                 {
                 $form->add('password', PasswordType::class, [
                 'help' => 'Minimum 10 caractères contenant un chiffre, un caractère spécial, une minuscule et une majuscule.',
-                ]);
+                 ]);
+                
                 }
 
 

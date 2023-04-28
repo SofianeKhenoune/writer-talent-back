@@ -143,7 +143,7 @@ class ApiPostController extends AbstractController
      * @Route("/api/post/{id}", name="api_post_update_item", methods={"PUT"})
      * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
-    public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface, SluggerInterface $sluggerInterface)
+    public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface)
     {
         $this->denyAccessUnlessGranted('POST_EDIT', $post);
         

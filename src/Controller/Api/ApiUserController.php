@@ -17,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-
+use Symfony\Component\Serializer\Encoder\JsonDecode;
 
 class ApiUserController extends AbstractController
 {
@@ -579,6 +579,74 @@ class ApiUserController extends AbstractController
         return $this->json(
             $user,
             200,
+            [],
+            ['groups' => 'get_post']
+        );
+    }
+
+    /**
+     * road to update email in case of forgotten password
+     * @Route("/api/user/new-password", name="api_user_new_password", methods={"PUT"})
+     */
+    public function setNewPasswordForgotten(ManagerRegistry $doctrine, Request $request, UserRepository $userRepository, SerializerInterface $serializer, ValidatorInterface $validatorInterface, UserPasswordHasherInterface $userPasswordHasher)
+    {
+        // get the json content 
+        $jsonContent = $request->getContent();
+        // decoding json into php object
+        $test = json_decode($jsonContent);
+
+
+        // retrieving the email to retrieve then $user 
+        $email = $test->email;
+        $user = $userRepository->findOneBy(['email' => $email]);
+
+        // if user not found then the email is not found
+        if($user == null) 
+        {
+            return $this->json([
+                'error' => "email non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+        // hashing the new password 
+        $newPassword['password'] = $test->password;
+
+        // encoding into json 
+        $newpasswordJson = json_encode($newPassword);
+
+        try 
+        {
+        // deserialize the json into post entity
+        $userModified = $serializer->deserialize($newpasswordJson, User::class, 'json', ['object_to_populate' => $user]);
+
+        } 
+        catch (NotEncodableValueException $e) 
+        {
+            return $this->json(
+                ["error" => "JSON INVALIDE"],
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+
+        $errors = $validatorInterface->validate($userModified);
+
+        if(count($errors) > 0)
+        {
+            return $this->json(
+                $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+            );
+        }
+
+        // save the modification of the entity and hash new password
+        $user->setPassword($userPasswordHasher->hashPassword($user, $user->getPassword()));
+        $entityManager = $doctrine->getManager();
+        $entityManager->persist($userModified);
+        $entityManager->flush();
+
+        return $this->json(
+            $userModified,
+            Response::HTTP_CREATED,
             [],
             ['groups' => 'get_post']
         );
