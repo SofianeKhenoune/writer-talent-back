@@ -37,7 +37,7 @@ class GenreController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $genre->setSlug($SluggerInterface->slug($genre->getName())->lower());
+            
             $genreRepository->add($genre, true);
             $this->addFlash('success', "<b>{$genre->getName()}</b> ajouté.");
 

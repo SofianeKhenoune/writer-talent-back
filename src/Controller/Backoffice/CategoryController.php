@@ -37,7 +37,6 @@ class CategoryController extends AbstractController
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $category->setSlug($SluggerInterface->slug($category->getName())->lower());
 
             $categoryRepository->add($category, true);
 

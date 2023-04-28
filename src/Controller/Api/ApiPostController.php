@@ -80,7 +80,6 @@ class ApiPostController extends AbstractController
         }
 
         $post->setUser($user);
-        $post->setSlug($SluggerInterface->slug($post->getTitle())->lower());
 
         $errors = $validatorInterface->validate($post);
 
@@ -115,7 +114,7 @@ class ApiPostController extends AbstractController
     {
 
         $this->denyAccessUnlessGranted('POST_REMOVE', $post);
-
+        
         if(!$post) 
         {
             return $this->json([
@@ -146,7 +145,7 @@ class ApiPostController extends AbstractController
      */
     public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface, SluggerInterface $sluggerInterface)
     {
-        $this->denyAccessUnlessGranted('POST_UPDATE', $post);
+        $this->denyAccessUnlessGranted('POST_EDIT', $post);
         
         if(!$post) 
         {
@@ -174,9 +173,6 @@ class ApiPostController extends AbstractController
                     Response::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
-
-            $post->setSlug($sluggerInterface->slug($post->getTitle())->lower());
-
             $errors = $validatorInterface->validate($postModified);
 
             if(count($errors) > 0)

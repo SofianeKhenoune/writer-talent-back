@@ -55,9 +55,6 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // when the form is submitted and valid, set of the slug and published date 
-            
-            $post->setSlug($SluggerInterface->slug($post->getTitle())->lower());
 
             if($post->getStatus()== 2)
             {
@@ -95,7 +92,6 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setSlug($SluggerInterface->slug($post->getTitle())->lower());
 
             if($post->getStatus()== 2)
             {
