@@ -9,10 +9,12 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class PostVoter extends Voter
-{
+{   
     public const UPDATE = 'POST_EDIT';
     public const REMOVE = 'POST_REMOVE';
     public const SETSTATUS = 'POST_SET_STATUS';
+    public const READ = 'POST_READ';
+
 
     private $security;
 
@@ -24,7 +26,7 @@ class PostVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::REMOVE, self::UPDATE, self::SETSTATUS])) {
+        if (!in_array($attribute, [self::REMOVE, self::UPDATE, self::SETSTATUS, self::READ] )) {
             return false;
         }
 
@@ -60,6 +62,10 @@ class PostVoter extends Voter
                 break;
             case self::SETSTATUS:
                 // logic to determine if the user can UPDATE
+                return $user === $subject->getUser();
+                break;
+            case self::READ:
+                // logic to determine if the user can READ
                 return $user === $subject->getUser();
                 break;
         }

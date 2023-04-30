@@ -24,12 +24,19 @@ class ApiPostController extends AbstractController
      */
     public function getItem(?Post $post, ManagerRegistry $doctrine)
     {
-
         if(!$post) 
         {
             return $this->json([
                 'error' => "écrit non trouvé",
                 response::HTTP_NOT_FOUND
+            ]);
+        }
+
+
+        if ($post->getStatus() !== 2 ) {
+            return $this->json([
+                'error' => "Cette article n'est pas encore publié",
+                Response::HTTP_FORBIDDEN
             ]);
         }
 
@@ -145,6 +152,7 @@ class ApiPostController extends AbstractController
      */
     public function updateItem(ManagerRegistry $doctrine, ?Post $post, Request $request, SerializerInterface $serializer, ValidatorInterface $validatorInterface)
     {
+
         $this->denyAccessUnlessGranted('POST_EDIT', $post);
         
         if(!$post) 
@@ -291,7 +299,7 @@ class ApiPostController extends AbstractController
         if(!$post) 
         {
             return $this->json([
-                'error' => "status non trouvé",
+                'error' => "écrit non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
         }
@@ -355,7 +363,7 @@ class ApiPostController extends AbstractController
         if(!$post) 
         {
             return $this->json([
-                'error' => "utilisateur non trouvé",
+                'error' => "écrit non trouvé",
                 response::HTTP_NOT_FOUND
             ]);
         }
@@ -367,5 +375,41 @@ class ApiPostController extends AbstractController
             200,
             [],
         );
+    }
+
+    /**
+     * road to get a post to update
+     * @Route("/api/post/awaiting/{id}", name="api_post_get_item_awaiting", methods={"GET"})
+     */
+    public function getAwaitingItem(?Post $post)
+    {
+        // authorize access only if the user connected is the author of the post 
+        $this->denyAccessUnlessGranted('POST_READ', $post);
+
+        if(!$post) 
+        {
+            return $this->json([
+                'error' => "écrit non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+
+        if ($post->getStatus() == 2 ) {
+            return $this->json([
+                'error' => "Cette article est déjà publié",
+                Response::HTTP_FORBIDDEN
+            ]);
+        }
+
+        else
+        {
+            return $this->json(
+                $post,
+                200,
+                [],
+                ['groups' => 'get_post']
+            );
+        }
     }
 }
