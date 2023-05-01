@@ -42,16 +42,6 @@ class ApiPostController extends AbstractController
 
         else
         {
-            // update nbViews
-            $nbViews = $post->getNbViews();
-            $post->setNbViews($nbViews+1);
-
-            // save the modification of the entity
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($post);
-            $entityManager->flush();
-
-
             return $this->json(
                 $post,
                 200,
@@ -60,6 +50,48 @@ class ApiPostController extends AbstractController
             );
         }
     }
+
+    /**
+     * increment nb views of a given post
+     * @Route("/api/post/{id}/add-view", name="api_post_add_view", methods={"PUT"})
+     */
+    public function addView(?Post $post, ManagerRegistry $doctrine)
+    {
+
+        if(!$post) {
+            return $this->json([
+                'error' => "écrit non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        } 
+
+        if ($post->getStatus() !== 2 ) {
+            return $this->json([
+                'error' => "Cette article n'est pas encore publié",
+                Response::HTTP_FORBIDDEN
+            ]);
+        }
+
+        else 
+        
+        {
+            // update nbViews
+            $nbViews = $post->getNbViews();
+            $post->setNbViews($nbViews+1);
+
+            // save the modification of the entity
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
+        }
+
+        return $this->json(
+            [],
+            Response::HTTP_CREATED,
+            [],
+        );    
+    }
+
 
     /**
      * @Route("/api/post", name="api_post_create_item", methods={"POST"})

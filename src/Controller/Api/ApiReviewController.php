@@ -92,7 +92,7 @@ class ApiReviewController extends AbstractController
             ]);
         }
 
-        $reviewsListOnPost = $reviewRepository->findByPost($post , ["createdAt" => "DESC"]);
+        $reviewsListOnPost = $reviewRepository->findByPost($post, ["createdAt" => "DESC"]);
 
         return $this->json(
             $reviewsListOnPost,
