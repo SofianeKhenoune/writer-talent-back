@@ -215,11 +215,11 @@ class ApiUserController extends AbstractController
     }
 
     /**
-     * road to add a favorite post to a given user
+     * road to toggle a favorite post to a given user
      * @Route("/api/user/favorites/post/{id}", name="api_user_connect_posts_favorites_new", methods={"PUT"})
      * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
-    public function addFavoritePost(?Post $post, ManagerRegistry $doctrine)
+    public function toggleFavorite(?Post $post, ManagerRegistry $doctrine)
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -240,7 +240,16 @@ class ApiUserController extends AbstractController
             ]);
         }
 
-        $user->addFavoritesPost($post);
+        if(!$user->getFavoritesPosts()->contains($post))
+        {
+            $user->addFavoritesPost($post);
+
+        }
+
+        elseif ($user->getFavoritesPosts()->contains($post)) 
+        {
+            $user->RemoveFavoritesPost($post);
+        }
 
         // save the modification of the entity
         $entityManager = $doctrine->getManager();
@@ -248,7 +257,7 @@ class ApiUserController extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            $user->getFavoritesPosts(),
+            $user->getFavoritesPosts()->contains($post),
             Response::HTTP_CREATED,
             [],
             ['groups' => 'get_post']
@@ -326,11 +335,11 @@ class ApiUserController extends AbstractController
     }
 
     /**
-     * road to add a post to the to read list of a given user
+     * road to toggle a post to the to read list of a given user
      * @Route("/api/user/toread/post/{id}", name="api_user_connected_posts_toread_new", methods={"PUT"})
      * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
-    public function addToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
+    public function toggleToReadPost(?User $user, ?Post $post, ManagerRegistry $doctrine)
     {
         
         /** @var \App\Entity\User $user */
@@ -352,7 +361,13 @@ class ApiUserController extends AbstractController
             ]);
         }
 
-        $user->addToReadPost($post);
+        if (!$user->getToReadPosts()->contains($post)) {
+            $user->addToReadPost($post);
+        }
+        elseif ($user->getToReadPosts()->contains($post)) 
+        {
+            $user->RemoveToReadPost($post);
+        }
 
         // save the modification of the entity
         $entityManager = $doctrine->getManager();
@@ -360,7 +375,7 @@ class ApiUserController extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            $user->getToReadPosts(),
+            $user->getToReadPosts()->contains($post),
             Response::HTTP_CREATED,
             [],
             ['groups' => 'get_post']
@@ -409,11 +424,11 @@ class ApiUserController extends AbstractController
     }
 
     /**
-     * road to add a like on a given post from a given user
+     * road to toggle a like on a given post from a given user
      * @Route("/api/user/post/{id}/like", name="api_user_add_like", methods={"PUT"})
      * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
-    public function addLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
+    public function like(ManagerRegistry $doctrine, ?Post $post, ?User $user)
     {
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
@@ -444,63 +459,14 @@ class ApiUserController extends AbstractController
             {
                 $nbLikes = $post->getNbLikes();
                 $post->setNbLikes($nbLikes+1);
+                $user->addLiked($post);
             }
 
-            // add the association in the DB
-            $user->addLiked($post);
-
-            // save the modification of the entity
-            $entityManager = $doctrine->getManager();
-            $entityManager->persist($post);
-            $entityManager->flush();
-
-            return $this->json(
-                [],
-                Response::HTTP_CREATED,
-                [],
-            );
-        }
-    }
-
-    /**
-     * road to remove a like on a given post from a given user
-     * @Route("/api/user/post/{id}/like", name="api_user_remove_like", methods={"DELETE"})
-     * @isGranted("ROLE_USER", message="Vous devez être connecté")
-     */
-    public function removeLike(ManagerRegistry $doctrine, ?Post $post, ?User $user)
-    {
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
-        
-
-        if(!$post) 
-        {
-            return $this->json([
-                'error' => "écrit non trouvé",
-                response::HTTP_NOT_FOUND
-            ]);
-        }
-
-        elseif(!$user)
-        {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
-                response::HTTP_NOT_FOUND
-            ]);
-        }
-
-        else
-        {
-
-            // if the association between the post and the user already exist then decrement the nbLike of the post
-            // preventing a user to be able t* @isGranted("ROLE_ADMIN", message="Vous devez être un administrateur")o dislike a post more than one time 
-            if($user->getLiked()->contains($post))
-            {
+            elseif ($user->getLiked()->contains($post)) {
                 $nbLikes = $post->getNbLikes();
                 $post->setNbLikes($nbLikes-1);
+                $user->removeLiked($post);
             }
-            
-            $user->removeLiked($post);
 
             // save the modification of the entity
             $entityManager = $doctrine->getManager();
@@ -508,7 +474,8 @@ class ApiUserController extends AbstractController
             $entityManager->flush();
 
             return $this->json(
-                [],
+                // return true or false if the post is liked 
+                $user->getLiked()->contains($post),
                 Response::HTTP_CREATED,
                 [],
             );
@@ -585,6 +552,94 @@ class ApiUserController extends AbstractController
     }
 
     /**
+
+     * @Route("/api/user/post/{id}/is-liked", name="api_user_is_liked", methods={"GET"})
+     */
+    public function isliked(?Post $post, ?User $user)
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if($user->getLiked()->contains($post)) 
+        {
+            return $this->json(
+                true,
+                200,
+                [],
+                []
+            );
+        }
+        else
+        {
+            return $this->json(
+                false,
+                200,
+                [],
+                []
+            );
+        }
+    }
+
+    /**
+     * road to get like/fav/toread stats on a given post
+     * @Route("/api/user/post/{id}/stats", name="api_user_post_stats", methods={"GET"})
+     */
+    public function getPostInfo(?Post $post, ?User $user)
+    {
+
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if(!$user) 
+        {
+            return $this->json([
+                'error' => "utilisateur non trouvé.",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+
+        elseif(!$post)
+        {
+            return $this->json([
+                'error' => "post non trouvé",
+                response::HTTP_NOT_FOUND
+            ]);
+        }
+        // default data : 
+        $postStat = [
+            'like' => false,
+            'favorite' => false,
+            'readLater' => false
+        ];
+
+        if($user->getLiked()->contains($post))
+        {
+            $postStat['like'] = true;
+        }
+
+        if($user->getFavoritesPosts()->contains($post))
+        {
+            $postStat['favorite'] = true;
+        }
+
+        if($user->getToReadPosts()->contains($post))
+        {
+            $postStat['readLater'] = true;
+        }
+
+        return $this->json(
+            $postStat,
+            200,
+            [],
+            []
+        );
+    }
+
+
+
+
+
+    /**
      * road to update email in case of forgotten password
      * @Route("/api/user/new-password", name="api_user_new_password", methods={"PUT"})
      */
@@ -650,5 +705,7 @@ class ApiUserController extends AbstractController
             [],
             ['groups' => 'get_post']
         );
+
+        
     }
 }

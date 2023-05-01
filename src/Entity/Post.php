@@ -108,6 +108,7 @@ class Post
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="liked")
+     * @Groups({"get_post"})
      */
     private $likedBy;
 
