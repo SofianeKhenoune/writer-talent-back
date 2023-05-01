@@ -33,11 +33,22 @@ class ApiPostController extends AbstractController
         }
 
 
-        if ($post->getStatus() !== 2 ) {
+        if ($post->getStatus() == 0 ) {
             return $this->json([
-                'error' => "Cette article n'est pas encore publié",
+                'error' => "Cette article n'est pas encore été publié",
                 Response::HTTP_FORBIDDEN
             ]);
+        }
+        // possible only for the author of the post
+        elseif ($post->getStatus() == 1 ) {
+            $this->denyAccessUnlessGranted('POST_READ', $post);
+
+            return $this->json(
+                $post,
+                200,
+                [],
+                ['groups' => 'get_post']
+            );
         }
 
         else
