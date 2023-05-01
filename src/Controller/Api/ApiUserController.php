@@ -299,10 +299,10 @@ class ApiUserController extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            $user->getFavoritesPosts(),
+            [],
             Response::HTTP_CREATED,
             [],
-            ['groups' => 'get_post']
+            []
         );
     }
 
@@ -534,7 +534,7 @@ class ApiUserController extends AbstractController
     }
 
     /**
-     * road to get a user from an email given
+     * road to get a user
      * use by front to get information on the user connected (after log in)
      * @Route("/api/user/get", name="api_user_get", methods={"GET"})
      */
@@ -549,35 +549,6 @@ class ApiUserController extends AbstractController
             [],
             ['groups' => 'get_post']
         );
-    }
-
-    /**
-
-     * @Route("/api/user/post/{id}/is-liked", name="api_user_is_liked", methods={"GET"})
-     */
-    public function isliked(?Post $post, ?User $user)
-    {
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
-
-        if($user->getLiked()->contains($post)) 
-        {
-            return $this->json(
-                true,
-                200,
-                [],
-                []
-            );
-        }
-        else
-        {
-            return $this->json(
-                false,
-                200,
-                [],
-                []
-            );
-        }
     }
 
     /**
@@ -634,10 +605,6 @@ class ApiUserController extends AbstractController
             []
         );
     }
-
-
-
-
 
     /**
      * road to update email in case of forgotten password
