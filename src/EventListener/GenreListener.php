@@ -16,9 +16,11 @@ class GenreListener
     }
     // the entity listener methods receive two arguments:
     // the entity instance and the lifecycle event
-    public function updateSlug(Genre $genre, LifecycleEventArgs $event): void
+    public function updateSlug(?Genre $genre, LifecycleEventArgs $event): void
     {
         // On slugifie le titre
-        $genre->setSlug($this->slugger->slug($genre->getName())->lower());
+        if($genre->getName() != null) {
+            $genre->setSlug($this->slugger->slug($genre->getName())->lower());
+        }
     }
 }

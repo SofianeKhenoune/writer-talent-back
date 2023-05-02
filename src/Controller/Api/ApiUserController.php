@@ -136,7 +136,7 @@ class ApiUserController extends AbstractController
      * road to get all users with at least one publicated post
      * @Route("/api/users/authors", name="api_user_get_authors", methods={"GET"})
      */
-    public function getAuthors(PostRepository $postRepository)
+    public function getAuthors(PostRepository $postRepository, UserRepository $userRepository)
     {
         // get all publicated post
         $allPulicatedPosts = $postRepository->findBy(['status' => 2]);
@@ -144,17 +144,29 @@ class ApiUserController extends AbstractController
         // creation of an empty table authorList
         $authorList = [];
 
+
         // boucle on all publicated post to get their user
         foreach ($allPulicatedPosts as $postPublicated) {
         // if the user does not already belong to the authorlist then push him in the author list
-        if(!in_array($postPublicated->getUser(), $authorList))
+        if(!in_array($postPublicated->getUser()->getId(), $authorList))
         {
-            $authorList[] = $postPublicated->getUser();
+            // array_push($authorList, $postPublicated->getUser()->getId());
+            $authorList[$postPublicated->getUser()->getId()] = count($postRepository->findBy(['user' => $postPublicated->getUser(), 'status' => 2]));
+            // $authorList[]= $postPublicated->getUser();
+
         }
         }
 
+        $formatedAuthorsArray = [];
+
+        foreach ($authorList as $authorId => $nbPublication) 
+        {
+            $formatedAuthorsArray[$authorId]['user'] = $userRepository->find($authorId);
+            $formatedAuthorsArray[$authorId]['nbPublication'] = $nbPublication;
+        }
+
         return $this->json(
-            $authorList,
+            $formatedAuthorsArray,
             200,
             [],
             ['groups' => 'get_post']

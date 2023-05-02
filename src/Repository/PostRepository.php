@@ -52,7 +52,7 @@ class PostRepository extends ServiceEntityRepository
         ->orderBy('RAND()')
         ->setMaxResults(1);
 
-        return $query->getQuery()->getResult();
+        return $query->getQuery()->getOneOrNullResult();
     }
 
     /**
