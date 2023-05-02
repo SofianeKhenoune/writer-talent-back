@@ -167,7 +167,7 @@ class ApiPostController extends AbstractController
      */
     public function deleteItem(ManagerRegistry $doctrine, ?Post $post)
     {
-
+        // Possible only if the logged-in user is the author of the writing or is an admin        
         $this->denyAccessUnlessGranted('POST_REMOVE', $post);
         
         if(!$post) 
@@ -259,9 +259,10 @@ class ApiPostController extends AbstractController
     public function getRandomItem(PostRepository $postRepository)
     {
         $randomPost = $postRepository->findOneRandomPost();
+        $randomPostId = $randomPost->getId();
 
         return $this->json(
-            $randomPost,
+            $randomPostId,
             200,
             [],
             ['groups' => 'get_post']
