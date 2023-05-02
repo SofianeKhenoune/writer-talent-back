@@ -3,42 +3,48 @@
 {% block title %}Post{% endblock %}
 
 {% block body %}
-    <h1>Écrit {{ post.id }}</h1>
+    <h1>{{ post.title }}</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
+                <th>Id en base de donnée</th>
                 <td>{{ post.id }}</td>
             </tr>
             <tr>
-                <th>Title</th>
+                <th>Titre</th>
                 <td>{{ post.title }}</td>
             </tr>
             <tr>
-                <th>NbViews</th>
+                <th>Nombre de vues</th>
                 <td>{{ post.nbViews }}</td>
             </tr>
             <tr>
-                <th>NbLikes</th>
+                <th>Nombre de likes</th>
                 <td>{{ post.nbLikes }}</td>
             </tr>
             <tr>
-                <th>PublishedAt</th>
+                <th>Date de publication</th>
                 <td>{{ post.publishedAt ? post.publishedAt|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
-                <th>CreatedAt</th>
+                <th>Date de création</th>
                 <td>{{ post.createdAt ? post.createdAt|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
-                <th>Status</th>
-                <td>{{ post.status }}</td>
+                <th>Status de publication</th>
+                <td>
+                    {% if post.status == 0 %}Sauvegardé
+                    {% elseif post.status == 1 %}En attente de publication
+                    {% elseif post.status == 2 %}Publié
+                    {% endif %}
+                </td>
             </tr>
             <tr>
-                <th>Slug</th>
-                <td>{{ post.slug }}</td>
+                <th>Auteur</th>
+                <td>{{ post.user.username }}</td>
             </tr>
+
         </tbody>
     </table>
 
