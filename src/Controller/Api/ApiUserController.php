@@ -148,25 +148,39 @@ class ApiUserController extends AbstractController
         // boucle on all publicated post to get their user
         foreach ($allPulicatedPosts as $postPublicated) {
         // if the user does not already belong to the authorlist then push him in the author list
-        if(!in_array($postPublicated->getUser()->getId(), $authorList))
+        if(!in_array($postPublicated->getUser(), $authorList))
         {
             // array_push($authorList, $postPublicated->getUser()->getId());
-            $authorList[$postPublicated->getUser()->getId()] = count($postRepository->findBy(['user' => $postPublicated->getUser(), 'status' => 2]));
+            $authorList[] = $postPublicated->getUser();
             // $authorList[]= $postPublicated->getUser();
 
         }
         }
 
-        $formatedAuthorsArray = [];
 
-        foreach ($authorList as $authorId => $nbPublication) 
-        {
-            $formatedAuthorsArray[$authorId]['user'] = $userRepository->find($authorId);
-            $formatedAuthorsArray[$authorId]['nbPublication'] = $nbPublication;
-        }
+        // // boucle on all publicated post to get their user
+        // foreach ($allPulicatedPosts as $postPublicated) {
+        //     // if the user does not already belong to the authorlist then push him in the author list
+        //     if(!in_array($postPublicated->getUser()->getId(), $authorList))
+        //     {
+        //         // array_push($authorList, $postPublicated->getUser()->getId());
+        //         $authorList[$postPublicated->getUser()->getId()] = count($postRepository->findBy(['user' => $postPublicated->getUser(), 'status' => 2]));
+        //         // $authorList[]= $postPublicated->getUser();
+
+        //     }
+        //     }
+
+        //     $formatedAuthorsArray = [];
+
+        //     foreach ($authorList as $authorId => $nbPublication) 
+        //     {
+        //         $formatedAuthorsArray[$authorId]['user'] = $userRepository->find($authorId);
+        //         $formatedAuthorsArray[$authorId]['nbPublication'] = $nbPublication;
+        //     }
+            
 
         return $this->json(
-            $formatedAuthorsArray,
+            $authorList,
             200,
             [],
             ['groups' => 'get_post']

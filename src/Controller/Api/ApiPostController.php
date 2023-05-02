@@ -22,7 +22,7 @@ class ApiPostController extends AbstractController
      * road to get a post from a given id
      * @Route("/api/post/{id}", name="api_post_get_item", methods={"GET"})
      */
-    public function getItem(?Post $post, ManagerRegistry $doctrine)
+    public function getItem(?Post $post)
     {
         if(!$post) 
         {
@@ -40,7 +40,9 @@ class ApiPostController extends AbstractController
             ]);
         }
         // possible only for the author of the post
-        elseif ($post->getStatus() == 1 ) {
+        elseif ($post->getStatus() == 1 ) 
+        {
+
             $this->denyAccessUnlessGranted('POST_READ', $post);
 
             return $this->json(
@@ -63,7 +65,7 @@ class ApiPostController extends AbstractController
     }
 
     /**
-     * increment nb views of a given post
+     * road to increment nb views of a given post
      * @Route("/api/post/{id}/add-view", name="api_post_add_view", methods={"PUT"})
      */
     public function addView(?Post $post, ManagerRegistry $doctrine)
@@ -98,7 +100,7 @@ class ApiPostController extends AbstractController
 
         return $this->json(
             [],
-            Response::HTTP_CREATED,
+            Response::HTTP_OK,
             [],
         );    
     }
@@ -108,12 +110,12 @@ class ApiPostController extends AbstractController
      * @Route("/api/post", name="api_post_create_item", methods={"POST"})
      * @isGranted("ROLE_USER", message="Vous devez être connecté")
      */
-    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface, SluggerInterface $SluggerInterface)
+    public function createItem(Request $request, SerializerInterface $serializer, ManagerRegistry $doctrine, ValidatorInterface $validatorInterface)
     {
-        /** @var \App\Entity\User $user */
+        // get the user connected thanks to JWT token 
         $user = $this->getUser();
 
-        // get the json
+        // get the json of the request
         $jsonContent = $request->getContent();
 
         try 
@@ -129,8 +131,11 @@ class ApiPostController extends AbstractController
             );
         }
 
+        // set the user with the connected user 
         $post->setUser($user);
 
+
+        // check if the post is correctly writen 
         $errors = $validatorInterface->validate($post);
 
         if(count($errors) > 0)
