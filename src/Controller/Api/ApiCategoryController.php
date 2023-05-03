@@ -35,10 +35,10 @@ class ApiCategoryController extends AbstractController
     {
         if(!$category) 
         {
-            return $this->json([
-                'error' => "univers non trouvé",
+            return $this->json(
+                ['error' => "univers non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
         
         $posts = $postRepository->findAllPublicatedByCategory($category);

@@ -29,10 +29,10 @@ class ApiUserController extends AbstractController
     {
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
         $postList = $postRepository->findBy(['status' => 2, 'user' => $user]);
 
@@ -57,10 +57,10 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $postList = $postRepository->findBy(['status' => 2, 'user' => $user]);
@@ -86,10 +86,10 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $postList = $postRepository->findBy(['status' => 1, 'user' => $user]);
@@ -116,10 +116,10 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $postList = $postRepository->findBy(['status' => 0, 'user' => $user]);
@@ -195,10 +195,10 @@ class ApiUserController extends AbstractController
     {
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $postPublished = $postRepository->findBy(['status' => 2, 'user' => $user]);
@@ -224,10 +224,10 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $favoritePosts = $user->getFavoritesPosts();
@@ -252,18 +252,18 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         elseif(!$post)
         {
-            return $this->json([
-                'error' => "post non trouvé",
+            return $this->json(
+                ['error' => "post non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         if(!$user->getFavoritesPosts()->contains($post))
@@ -283,7 +283,7 @@ class ApiUserController extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            $user->getFavoritesPosts()->contains($post),
+            [],
             Response::HTTP_CREATED,
             [],
             ['groups' => 'get_post']
@@ -303,18 +303,18 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         elseif(!$post)
         {
-            return $this->json([
-                'error' => "post non trouvé",
+            return $this->json(
+                ['error' => "post non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
         
         $user->removeFavoritesPost($post);
@@ -344,10 +344,10 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $toReadPosts = $user->getToReadPosts();
@@ -373,18 +373,18 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé.",
+            return $this->json(
+                ['error' => "utilisateur non trouvé."],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         elseif(!$post)
         {
-            return $this->json([
-                'error' => "post non trouvé",
+            return $this->json(
+                ['error' => "post non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         if (!$user->getToReadPosts()->contains($post)) {
@@ -401,7 +401,7 @@ class ApiUserController extends AbstractController
         $entityManager->flush();
 
         return $this->json(
-            $user->getToReadPosts()->contains($post),
+            [],
             Response::HTTP_CREATED,
             [],
             ['groups' => 'get_post']
@@ -420,18 +420,18 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         elseif(!$post)
         {
-            return $this->json([
-                'error' => "post non trouvé",
+            return $this->json(
+                ['error' => "post non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $user->removeToReadPost($post);
@@ -461,18 +461,18 @@ class ApiUserController extends AbstractController
 
         if(!$post) 
         {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         elseif(!$user)
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé",
+            return $this->json(
+                ['error' => "utilisateur non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         else
@@ -500,8 +500,7 @@ class ApiUserController extends AbstractController
             $entityManager->flush();
 
             return $this->json(
-                // return true or false if the post is liked 
-                $user->getLiked()->contains($post),
+                [],
                 Response::HTTP_CREATED,
                 [],
             );
@@ -542,7 +541,8 @@ class ApiUserController extends AbstractController
         if(count($errors) > 0)
         {
             return $this->json(
-                $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+                $errors, 
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -589,18 +589,18 @@ class ApiUserController extends AbstractController
 
         if(!$user) 
         {
-            return $this->json([
-                'error' => "utilisateur non trouvé.",
+            return $this->json(
+                ['error' => "utilisateur non trouvé."],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         elseif(!$post)
         {
-            return $this->json([
-                'error' => "post non trouvé",
+            return $this->json(
+                ['error' => "post non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
         // default data : 
         $postStat = [
@@ -623,6 +623,8 @@ class ApiUserController extends AbstractController
         {
             $postStat['readLater'] = true;
         }
+
+        $postStat['nbLikes'] = $post->getNbLikes();
 
         return $this->json(
             $postStat,
@@ -651,10 +653,10 @@ class ApiUserController extends AbstractController
         // if user not found then the email is not found
         if($user == null) 
         {
-            return $this->json([
-                'error' => "email non trouvé",
+            return $this->json(
+                ['error' => "email non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
         // hashing the new password 
         $newPassword['password'] = $test->password;

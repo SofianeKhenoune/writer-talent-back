@@ -29,10 +29,10 @@ class ApiReviewController extends AbstractController
 
         if(!$post) 
         {
-            return $this->json([
-                'error' => "status non trouvé",
+            return $this->json(
+                ['error' => "status non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         // get the json
@@ -59,7 +59,8 @@ class ApiReviewController extends AbstractController
         if(count($errors) > 0)
         {
             return $this->json(
-                $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+                $errors, 
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -86,10 +87,10 @@ class ApiReviewController extends AbstractController
     {
         if(!$post) 
         {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $reviewsListOnPost = $reviewRepository->findByPost($post, ["createdAt" => "DESC"]);
@@ -113,10 +114,10 @@ class ApiReviewController extends AbstractController
 
         if(!$review) 
         {
-            return $this->json([
-                'error' => "commentaire non trouvé",
+            return $this->json(
+                ['error' => "commentaire non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         // save the modification of the entity

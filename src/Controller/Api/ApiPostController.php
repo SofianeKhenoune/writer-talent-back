@@ -33,23 +33,10 @@ class ApiPostController extends AbstractController
         }
 
 
-        if ($post->getStatus() == 0 ) {
-            return $this->json([
-                'error' => "Cette article n'est pas encore été publié",
-                Response::HTTP_FORBIDDEN
-            ]);
-        }
-        // possible only for the author of the post
-        elseif ($post->getStatus() == 1 ) 
-        {
-
-            $this->denyAccessUnlessGranted('POST_READ', $post);
-
+        if ($post->getStatus() !== 2 ) {
             return $this->json(
-                $post,
-                200,
-                [],
-                ['groups' => 'get_post']
+                ['error' => "Cette article n'est pas encore été publié"],
+                403,
             );
         }
 
@@ -64,6 +51,8 @@ class ApiPostController extends AbstractController
         }
     }
 
+    
+
     /**
      * road to increment nb views of a given post
      * @Route("/api/post/{id}/add-view", name="api_post_add_view", methods={"PUT"})
@@ -72,17 +61,17 @@ class ApiPostController extends AbstractController
     {
 
         if(!$post) {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         } 
 
         if ($post->getStatus() !== 2 ) {
-            return $this->json([
-                'error' => "Cette article n'est pas encore publié",
+            return $this->json(
+                ['error' => "Cette article n'est pas encore publié"],
                 Response::HTTP_FORBIDDEN
-            ]);
+            );
         }
 
         else 
@@ -141,7 +130,8 @@ class ApiPostController extends AbstractController
         if(count($errors) > 0)
         {
             return $this->json(
-                $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+                $errors, 
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -172,10 +162,10 @@ class ApiPostController extends AbstractController
         
         if(!$post) 
         {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         else
@@ -205,10 +195,10 @@ class ApiPostController extends AbstractController
         
         if(!$post) 
         {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         else
@@ -234,7 +224,8 @@ class ApiPostController extends AbstractController
             if(count($errors) > 0)
             {
                 return $this->json(
-                    $errors, Response::HTTP_UNPROCESSABLE_ENTITY
+                    $errors, 
+                    Response::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
 
@@ -312,10 +303,10 @@ class ApiPostController extends AbstractController
 
         if(!$post) 
         {
-            return $this->json([
-                'error' => "status non trouvé",
+            return $this->json(
+                ['error' => "status non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         else
@@ -347,10 +338,10 @@ class ApiPostController extends AbstractController
 
         if(!$post) 
         {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         else
@@ -411,10 +402,10 @@ class ApiPostController extends AbstractController
     {
         if(!$post) 
         {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
         $nbLike = $post->getLikedBy()->count();
@@ -437,18 +428,18 @@ class ApiPostController extends AbstractController
 
         if(!$post) 
         {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
 
         if ($post->getStatus() == 2 ) {
-            return $this->json([
-                'error' => "Cette article est déjà publié",
+            return $this->json(
+                ['error' => "Cette article est déjà publié"],
                 Response::HTTP_FORBIDDEN
-            ]);
+            );
         }
 
         else
