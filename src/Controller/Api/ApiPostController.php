@@ -26,18 +26,27 @@ class ApiPostController extends AbstractController
     {
         if(!$post) 
         {
-            return $this->json([
-                'error' => "écrit non trouvé",
+            return $this->json(
+                ['error' => "écrit non trouvé"],
                 response::HTTP_NOT_FOUND
-            ]);
+            );
         }
 
 
         if ($post->getStatus() !== 2 ) {
+
+            $this->denyAccessUnlessGranted('POST_READ', $post, 'TEST');
+
             return $this->json(
-                ['error' => "Cette article n'est pas encore été publié"],
-                403,
+                $post,
+                200,
+                [],
+                ['groups' => 'get_post']
             );
+            // return $this->json(
+            //     ['error' => "Cette article n'est pas encore été publié"],
+            //     403,
+            // );
         }
 
         else
@@ -123,7 +132,6 @@ class ApiPostController extends AbstractController
         // set the user with the connected user 
         $post->setUser($user);
 
-
         // check if the post is correctly writen 
         $errors = $validatorInterface->validate($post);
 
@@ -140,7 +148,6 @@ class ApiPostController extends AbstractController
         $entityManager = $doctrine->getManager();
         $entityManager->persist($post);
         $entityManager->flush();
-
 
         return $this->json(
             $post,

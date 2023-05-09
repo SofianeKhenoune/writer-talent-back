@@ -46,7 +46,7 @@ class PostVoter extends Voter
             return false;
         }
 
-        if ($this->security->isGranted('ROLE_MODERATEUR')) {
+        if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
 

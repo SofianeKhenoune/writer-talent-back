@@ -17,7 +17,9 @@ class ApiCategoryController extends AbstractController
      */
     public function getCategory(CategoryRepository $categoryRepository): Response
     {
-        $categoryList = $categoryRepository->findAll();
+        // $categoryList = $categoryRepository->findAll();
+        $categoryList = $categoryRepository->findBy([],['name' => 'ASC']);
+
 
         return $this->json(
             $categoryList, 

@@ -18,7 +18,10 @@ class ApiGenreController extends AbstractController
      */
     public function getGenres(GenreRepository $genreRepository): Response
     {
-        $genreList = $genreRepository->findAll();
+        // $genreList = $genreRepository->findAll();
+        $genreList = $genreRepository->findBy([],['name' => 'ASC']);
+
+ 
 
         return $this->json(
             $genreList, 

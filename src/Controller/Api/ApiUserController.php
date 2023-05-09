@@ -139,7 +139,7 @@ class ApiUserController extends AbstractController
     public function getAuthors(PostRepository $postRepository, UserRepository $userRepository)
     {
         // get all publicated post
-        $allPulicatedPosts = $postRepository->findBy(['status' => 2]);
+        $allPulicatedPosts = $postRepository->findBy(['status' => 2], ['user' => 'ASC']);
 
         // creation of an empty table authorList
         $authorList = [];
