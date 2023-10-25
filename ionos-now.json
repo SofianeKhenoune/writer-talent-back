@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "target": "github",
+  "source": {
+    "type": "repository",
+    "value": "modestman1986/writer-talent-back"
+  },
+  "builds": [{
+    "src": "web/",
+    "use": "@now/static-build"
+  }],
+  "alias": "writerapi.sofiane-web-dev.fr"
+}
